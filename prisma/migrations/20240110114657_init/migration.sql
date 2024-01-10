@@ -6,6 +6,7 @@ CREATE TABLE `usuario` (
     `senha` VARCHAR(191) NOT NULL,
     `telefone` VARCHAR(191) NOT NULL,
     `status` ENUM('ativo', 'inativo', 'expirado') NOT NULL,
+    `equipamentoId` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NULL,
 
@@ -48,7 +49,7 @@ CREATE TABLE `pessoa` (
     `localidade` VARCHAR(191) NOT NULL,
     `numero` VARCHAR(191) NOT NULL,
     `uf` VARCHAR(191) NOT NULL,
-    `status` ENUM('ativo', 'inativo', 'expirado') NOT NULL,
+    `status` ENUM('ativo', 'inativo', 'expirado') NOT NULL DEFAULT 'ativo',
     `pessoaId` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NULL,
@@ -126,6 +127,9 @@ CREATE TABLE `pessoaonbeneficio` (
 
     PRIMARY KEY (`pessoaId`, `beneficioId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `usuario` ADD CONSTRAINT `usuario_equipamentoId_fkey` FOREIGN KEY (`equipamentoId`) REFERENCES `equipamento`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `pessoa` ADD CONSTRAINT `pessoa_pessoaId_fkey` FOREIGN KEY (`pessoaId`) REFERENCES `pessoa`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

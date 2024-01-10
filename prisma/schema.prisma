@@ -28,6 +28,8 @@ model Usuario{
     status status_code
     permissoes UsuariosOnPermissoes[]
     entregas Entrega[]
+    equipamento Equipamento @relation(fields: [equipamentoId], references: [id])
+    equipamentoId String
 
     createdAt     DateTime  @default(now())
     updatedAt     DateTime? @updatedAt
@@ -117,9 +119,11 @@ model Equipamento{
     localidade String 
     numero String 
     uf String 
-    status status_code
+    status status_code @default(ativo)
 
     entregas Entrega[]
+
+    usuarios Usuario[]
      
     createdAt     DateTime  @default(now())
     updatedAt     DateTime? @updatedAt
