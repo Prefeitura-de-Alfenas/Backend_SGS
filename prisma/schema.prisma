@@ -48,8 +48,6 @@ model Permissao {
   @@map("permissao")
 } 
 
-
-
 model Pessoa {
     id String @id @default(uuid())
     nome String
@@ -78,7 +76,7 @@ model Pessoa {
 
     equipamento Equipamento @relation(fields: [equipamentoId], references: [id])
     equipamentoId String
-    
+
     responsavel Pessoa? @relation("Responsavel", fields: [pessoaId], references: [id])
     pessoaId String?
 
@@ -93,8 +91,6 @@ model Pessoa {
 
     @@map("pessoa")
 }
-
-
 
 model UsuariosOnPermissoes{
   usuario Usuario  @relation(fields: [usuarioId], references: [id])

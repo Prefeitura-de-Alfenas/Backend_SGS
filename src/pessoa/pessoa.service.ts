@@ -142,6 +142,9 @@ export class PessoaService {
     const pessoa = await this.prisma.pessoa.findUnique({
       where:{
           id
+      },
+      include:{
+        equipamento:true,
       }
     })
     if(!pessoa){
