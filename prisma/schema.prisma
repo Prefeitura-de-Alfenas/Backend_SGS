@@ -76,8 +76,11 @@ model Pessoa {
     uf String
     status status_code @default(ativo)
 
-   responsavel Pessoa? @relation("Responsavel", fields: [pessoaId], references: [id])
-   pessoaId String?
+    equipamento Equipamento @relation(fields: [equipamentoId], references: [id])
+    equipamentoId String
+    
+    responsavel Pessoa? @relation("Responsavel", fields: [pessoaId], references: [id])
+    pessoaId String?
 
    familiares Pessoa[] @relation("Responsavel")
 
@@ -124,6 +127,7 @@ model Equipamento{
     entregas Entrega[]
 
     usuarios Usuario[]
+    pessoas Pessoa[]
      
     createdAt     DateTime  @default(now())
     updatedAt     DateTime? @updatedAt

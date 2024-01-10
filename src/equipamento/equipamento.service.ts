@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class EquipamentoService {
 
+
   constructor(private prisma: PrismaService){}
 
     async create(createEquipamentoDTO: Prisma.EquipamentoCreateInput) {
@@ -31,21 +32,53 @@ export class EquipamentoService {
          }
     }
 
-    async findAll() {
+    async findAll(take:string,skip:string,filter:string) {
         try{
-           const equipamentos = await this.prisma.equipamento.findMany({
-            orderBy: {
-      
-                nome: 'asc'
+            const takeNumber = parseInt(take);
+            const skipNumber = parseInt(skip);
+            const page = (skipNumber == 0) ? skipNumber :  skipNumber * takeNumber;
+         
+             const equipamentos = await this.prisma.equipamento.findMany(
+             {
+               where:{
+                 nome:{
+                   contains : filter
+                 },
+                 status:'ativo'
+               },
+               orderBy: {
+             
+                   nome: 'asc'
+                 
+               },
+               take:takeNumber,
+               skip:page,
               
-            },
-           })
-
-           return equipamentos;
+               
+           }
+            );
+            return equipamentos;
         }catch(error){
             return {error: error.message}; 
         }
     }
+
+    async findAllNoFilter() {
+        try{
+            console.log("equipamentos");
+             const equipamentos = await this.prisma.equipamento.findMany(
+                {
+                 orderBy: {
+                    nome: 'asc'
+                 },
+                }
+            );
+   
+            return equipamentos;
+        }catch(error){
+            return {error: error.message}; 
+        }
+      }
 
     async findById(id: string) {
         try{

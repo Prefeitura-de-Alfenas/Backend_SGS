@@ -16,13 +16,19 @@ export class EquipamentoController {
     return this.equipamentoService.update(id,updateEquipamentoDTO);
   }
 
-  @Get('findall')
-  async GetAll(){
-    return this.equipamentoService.findAll();
+  @Get('findall/:take/skip/:skip/:filter?')
+  async GetAll(@Param('take') take:string, @Param('skip') skip:string, @Param('filter') filter?:string){
+    return this.equipamentoService.findAll(take,skip,filter);
   }
 
   @Get(':id')
   async GetById(@Param('id') id: string){
     return this.equipamentoService.findById(id);
   }
+
+  @Get()
+  async GetAllFilter(){
+    return this.equipamentoService.findAllNoFilter();
+  }
+
 }

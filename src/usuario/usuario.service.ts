@@ -135,6 +135,9 @@ export class UsuarioService {
       const usuario = await this.prisma.usuario.findUnique({
         where:{
             id
+        },
+        include:{
+          equipamento:true,
         }
       })
       return usuario;
@@ -215,7 +218,11 @@ export class UsuarioService {
         };
     }
     async findAll(){
-        const usuario = await this.prisma.usuario.findMany();
+        const usuario = await this.prisma.usuario.findMany({
+          include:{
+            equipamento:true
+          }
+        });
         return usuario;
     }
 
