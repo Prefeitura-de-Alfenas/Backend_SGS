@@ -1,0 +1,183 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum status_code {
+    ativo
+    inativo
+    expirado
+}
+
+
+
+model Usuario{
+    id String @id @default(uuid())
+    nome String
+    email String  @unique
+    senha String
+    telefone String
+    status status_code
+    permissoes UsuariosOnPermissoes[]
+    entregas Entrega[]
+
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime? @updatedAt
+
+    @@map("usuario")
+  
+}
+
+model Permissao {
+  id String @id @default(uuid())
+  nome String
+  usuarios UsuariosOnPermissoes[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime? @updatedAt
+   
+  @@map("permissao")
+} 
+
+
+
+model Pessoa {
+    id String @id @default(uuid())
+    nome String
+    cpf String @unique
+    sexo String
+    telefone String?
+    email String?
+    datanascimento DateTime
+    rg String?
+    parentesco String?
+    escolaridade String
+    estadocivil String
+    renda Decimal @db.Decimal(10,2)
+    ctpsassinada Int
+    ppcl Int
+    observacao String?
+    observacaorestrita String?
+    cep String
+    logradouro String
+    complemento String?
+    bairro String
+    localidade String
+    numero String
+    uf String
+    status status_code @default(ativo)
+
+   responsavel Pessoa? @relation("Responsavel", fields: [pessoaId], references: [id])
+   pessoaId String?
+
+   familiares Pessoa[] @relation("Responsavel")
+
+   entregas Entrega[]
+
+   beneficios PessoasOnBeneficios[]
+
+   createdAt     DateTime  @default(now())
+   updatedAt     DateTime? @updatedAt
+
+    @@map("pessoa")
+}
+
+
+
+model UsuariosOnPermissoes{
+  usuario Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId String
+
+  permissao Permissao @relation(fields: [permissaoId], references: [id])
+  permissaoId String
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime? @updatedAt
+  @@id([usuarioId,permissaoId])
+  @@map("usuariosonpermissoes")
+}
+
+model Equipamento{
+    id String @id @default(uuid())
+    nome String 
+    responsavel String 
+    sobre String 
+    observacao String 
+    cep String 
+    logradouro String 
+    complemento String? 
+    bairro String 
+    localidade String 
+    numero String 
+    uf String 
+    status status_code
+
+    entregas Entrega[]
+     
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime? @updatedAt
+    @@map("equipamento")
+}
+
+
+model Entrega{
+    id String @id @default(uuid())
+    quantidade  Int
+    observacao  String
+    datacadastro DateTime
+    status status_code
+   
+    pessoa Pessoa @relation(fields: [pessoId], references: [id])
+    pessoId String
+
+    entrega Equipamento @relation(fields: [equipamentoId], references: [id])
+    equipamentoId String
+
+    usuario Usuario @relation(fields: [usuarioId], references: [id])
+    usuarioId String
+
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime? @updatedAt
+     @@map("entrega")
+}
+
+model Beneficio{
+    id String @id @default(uuid())
+    nome  String
+    descricao  String
+    categoria  String
+    status status_code
+    
+    pessoas PessoasOnBeneficios[]
+
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime? @updatedAt
+    
+    @@map("beneficio")
+}
+
+model PessoasOnBeneficios {
+
+  pessoa Pessoa  @relation(fields: [pessoaId], references: [id])
+  pessoaId String
+   
+  beneficio Beneficio @relation(fields: [beneficioId], references: [id])
+  beneficioId String
+
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime? @updatedAt
+ 
+  @@id([pessoaId,beneficioId])
+
+  @@map("pessoaonbeneficio")
+
+}
+
