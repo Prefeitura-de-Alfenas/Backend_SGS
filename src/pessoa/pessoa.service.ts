@@ -153,12 +153,9 @@ export class PessoaService {
     return pessoa;
   }
   catch(error){
-    console.log(error)
     return error.message;
-
-
+    }
   }
-   }
 
    async findAllFamiliares(id:string,take:string,skip:string,filter:string){
     const takeNumber = parseInt(take);

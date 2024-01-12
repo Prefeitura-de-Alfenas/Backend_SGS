@@ -157,7 +157,8 @@ model Beneficio{
     nome  String
     descricao  String
     categoria  String
-    status status_code
+    valor Decimal @db.Decimal(10,2)
+    status status_code @default(ativo)
     
     pessoas PessoasOnBeneficios[]
 

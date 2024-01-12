@@ -37,7 +37,7 @@ export class UsuarioService {
          
         const result
          = usuario.permissoes.find(response => response.permissaoId === permissionId);
-         console.log(result)
+      
 
          if(result){
             await this.prisma.usuariosOnPermissoes.delete({
