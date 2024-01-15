@@ -23,7 +23,7 @@ export class BeneficioService {
      }
      
      const result = pessoa.beneficios.find(beneficio => beneficio.beneficioId === id.toString());
-     console.log('result',result)
+    
      if(result){
       await this.prisma.pessoasOnBeneficios.delete({
         where: {

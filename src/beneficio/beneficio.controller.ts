@@ -28,7 +28,7 @@ export class BeneficioController {
 
   @Patch(':id/pessoa/:pessoaid')
   async AddBeneficioPessoa(@Param('id') id: string,@Param('pessoaid') pessoaid: string){
-    console.log('edjfçlskjf')
+
     return this.beneficioService.AddBeneficioPessoa(id,pessoaid);
   }
 }

@@ -23,10 +23,12 @@ export class AuthService {
        name:user.nome,
        role:user.permissoes,
     }
+ 
     const jwtToken = this.jwtService.sign(payload);
     return {
       email:user.email,
       nome:user.nome,
+      role:user.permissoes,
       access_token: jwtToken
     }
     

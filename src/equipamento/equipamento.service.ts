@@ -65,7 +65,7 @@ export class EquipamentoService {
 
     async findAllNoFilter() {
         try{
-            console.log("equipamentos");
+    
              const equipamentos = await this.prisma.equipamento.findMany(
                 {
                  orderBy: {

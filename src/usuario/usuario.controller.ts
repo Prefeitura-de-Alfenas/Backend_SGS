@@ -46,7 +46,7 @@ export class UsuarioController {
  }
  @Patch(':id')
  async update(@Param('id') id: string){
-  console.log("id",id)
+
   return this.usuarioService.changeStatus(id)
  }
 

@@ -4,9 +4,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class PessoaService {
-  
+
  
     constructor(private prisma:PrismaService){}
+
     
     async changeResponsavelFamiliar(idFamilar: string) {
       try{
@@ -135,7 +136,7 @@ export class PessoaService {
     }
      );
      return pessoas;
-   }
+    }
 
    async findById(id:string) {
     try{
@@ -181,4 +182,53 @@ export class PessoaService {
     })
     return familiares;
    }
+
+   async changeStatus(id: string) {
+    const pessoa = await this.prisma.pessoa.findUnique({
+        where:{id}
+    })
+    if(!pessoa){
+        return ({error:'Pessoa não existe'})
+    }
+   
+    const changeStatusPessoa = await this.prisma.pessoa.update({
+        where:{
+            id,
+            pessoaId: null,
+        },
+        data:{
+            status:pessoa.status == 'ativo' ? 'inativo' : 'ativo'
+        }
+    })
+    return changeStatusPessoa
+}
+
+
+    
+  async findAllInativePessoas(take: string, skip: string, filter: string) {
+    const takeNumber = parseInt(take);
+    const skipNumber = parseInt(skip);
+    const page = (skipNumber == 0) ? skipNumber :  skipNumber * takeNumber;
+
+    const pessoas = await this.prisma.pessoa.findMany(
+      {
+        where:{
+          pessoaId: null,
+          cpf:{
+            contains : filter
+          },
+          status:'inativo'
+        },
+        orderBy: {
+      
+            createdAt: 'desc'
+          
+        },
+        take:takeNumber,
+        skip:page,
+        
+      
+    });
+      return pessoas;
+  }
 }

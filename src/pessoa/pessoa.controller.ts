@@ -41,4 +41,15 @@ export class PessoaController {
   return this.pessoaService.changeResponsavelFamiliar(idFamilar);
  }
 
+ @Patch('changestatus/:id')
+ async changeStatusPessoa(@Param('id') id: string){
+  console.log("id",id)
+  return this.pessoaService.changeStatus(id)
+ }
+
+ @Get('findallinative/:take/skip/:skip/:filter?')
+ async findallInativePessoas(@Param('take') take:string, @Param('skip') skip:string, @Param('filter') filter?:string){
+  return this.pessoaService.findAllInativePessoas(take,skip,filter);
+ }
+
 }

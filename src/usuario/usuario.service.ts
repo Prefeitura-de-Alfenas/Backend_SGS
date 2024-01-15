@@ -16,7 +16,7 @@ export class UsuarioService {
     }
 
    async permissaoChangeUser({userId, permissionId}:IPermissaoChangeUser) {
-    console.log('permissao change user',permissionId)   
+   
     const permissaoQuery =await   this.prisma.permissao.findUnique({
             where:{id:permissionId}
         });

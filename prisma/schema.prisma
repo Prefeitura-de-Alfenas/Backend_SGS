@@ -136,7 +136,7 @@ model Entrega{
     quantidade  Int
     observacao  String
     datacadastro DateTime
-    status status_code
+    status status_code  @default(ativo)
    
     pessoa Pessoa @relation(fields: [pessoId], references: [id])
     pessoId String
@@ -146,7 +146,7 @@ model Entrega{
 
     usuario Usuario @relation(fields: [usuarioId], references: [id])
     usuarioId String
-
+    
     createdAt     DateTime  @default(now())
     updatedAt     DateTime? @updatedAt
      @@map("entrega")
