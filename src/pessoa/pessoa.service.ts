@@ -4,10 +4,35 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class PessoaService {
+ 
 
  
     constructor(private prisma:PrismaService){}
+    async findbyidEntrega(id: string) {
+      try{
+        const pessoa = await this.prisma.pessoa.findUnique({
+          where:{
+              id
+          },
+          include:{
+            equipamento:true,
+            beneficios: {
+              include: {
+                beneficio: true,
+              },
+            },
+          }
+        })
 
+        if(!pessoa){
+            return {error:"Pessoa não existe no sistema"}
+        }
+        return pessoa;
+      }
+      catch(error){
+        return error.message;
+        }
+    }
     
     async changeResponsavelFamiliar(idFamilar: string) {
       try{
@@ -146,6 +171,7 @@ export class PessoaService {
       },
       include:{
         equipamento:true,
+        beneficios:true,
       }
     })
     if(!pessoa){

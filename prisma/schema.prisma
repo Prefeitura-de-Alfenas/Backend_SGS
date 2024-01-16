@@ -135,14 +135,17 @@ model Entrega{
     id String @id @default(uuid())
     quantidade  Int
     observacao  String
-    datacadastro DateTime
+    datacadastro DateTime  @default(now())
     status status_code  @default(ativo)
    
     pessoa Pessoa @relation(fields: [pessoId], references: [id])
     pessoId String
 
-    entrega Equipamento @relation(fields: [equipamentoId], references: [id])
+    equipamento Equipamento @relation(fields: [equipamentoId], references: [id])
     equipamentoId String
+
+    beneficio Beneficio @relation(fields: [beneficioId], references: [id])
+    beneficioId String
 
     usuario Usuario @relation(fields: [usuarioId], references: [id])
     usuarioId String
@@ -161,7 +164,7 @@ model Beneficio{
     status status_code @default(ativo)
     
     pessoas PessoasOnBeneficios[]
-
+    entregas Entrega[]
     createdAt     DateTime  @default(now())
     updatedAt     DateTime? @updatedAt
     

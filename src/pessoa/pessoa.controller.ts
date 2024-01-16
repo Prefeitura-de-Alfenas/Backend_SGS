@@ -21,6 +21,11 @@ export class PessoaController {
   return this.pessoaService.findById(id);
  }
 
+ @Get('entrega/:id')
+ async findbyidEntrega(@Param('id') id: string){
+  return this.pessoaService.findbyidEntrega(id);
+ }
+
  @Patch(':id')
  async update(@Param('id') id: string,@Body() updatePessoaDto:Prisma.PessoaUpdateInput){
   return this.pessoaService.update(id,updatePessoaDto)
@@ -43,7 +48,7 @@ export class PessoaController {
 
  @Patch('changestatus/:id')
  async changeStatusPessoa(@Param('id') id: string){
-  console.log("id",id)
+
   return this.pessoaService.changeStatus(id)
  }
 
