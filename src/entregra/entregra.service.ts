@@ -10,7 +10,7 @@ constructor(private prisma: PrismaService){}
   async create(createEntregaDTO: CreateEntregaDto) {
     try{
 
-      console.log('createEntregaDTO',createEntregaDTO)
+
         //Verificar se o EquipamentoId do usuario == a o equipamentoId da pessoa
         const usuario = await this.prisma.usuario.findUnique({
           where:{
@@ -28,6 +28,7 @@ constructor(private prisma: PrismaService){}
         //buscar pessoa e o beneficio que essa pessoa tem com id do beneficio id e verficar se tem data menor que 30 dias
         const beneficioModelador = await this.prisma.entrega.findMany({
           where:{
+             pessoId:createEntregaDTO.pessoId,
              beneficioId:createEntregaDTO.beneficioId,
              datacadastro: {
               gte: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000), // Subtrai 30 dias da data atual
@@ -52,6 +53,34 @@ constructor(private prisma: PrismaService){}
   }
 
 
+  async findAllForPessoas(id:string,take:string,skip:string,filter:string) {
+    try{
+        const takeNumber = parseInt(take);
+        const skipNumber = parseInt(skip);
+        const page = (skipNumber == 0) ? skipNumber :  skipNumber * takeNumber;
+
+         const entrega = await this.prisma.entrega.findMany(
+            {
+            
+              where:{
+                pessoId:id,
+                status:'ativo'
+              },
+         
+              include:{
+                pessoa: true,
+                beneficio: true,
+              },
+              take:takeNumber,
+              skip:page,
+           }
+        );
+        return entrega;
+    }catch(error){
+        return {error: error.message}; 
+    }
+  }
+  
   async findAll(take:string,skip:string,filter:string) {
     try{
         const takeNumber = parseInt(take);
@@ -64,7 +93,10 @@ constructor(private prisma: PrismaService){}
                 status:'ativo'
               },
          
-         
+              include:{
+                pessoa: true,
+                beneficio: true,
+              },
               take:takeNumber,
               skip:page,
            }
@@ -74,4 +106,21 @@ constructor(private prisma: PrismaService){}
         return {error: error.message}; 
     }
   }
+
+  async findById(id: string) {
+    try{
+      const entrega = await this.prisma.entrega.findUnique({
+        where:{id},
+        include:{
+          pessoa: true,
+          beneficio: true,
+          equipamento:true,
+          usuario:true,
+        }
+      })
+      return entrega
+    }catch(error){
+        return {error: error.message};  
+    }
+}
 }

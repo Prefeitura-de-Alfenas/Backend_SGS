@@ -17,4 +17,20 @@ export class EntregraController {
     return this.entregraService.findAll(take,skip,filter);
   }
 
+  @Get(':id')
+  async GetById(@Param('id') id: string){
+    return this.entregraService.findById(id);
+  }
+
+  @Get('findallforpessoas/:id/take/:take/skip/:skip/:filter?')
+  async GetAllForPessoas(
+    @Param('id') id: string,
+    @Param('take') take:string,
+     @Param('skip') skip:string, 
+     @Param('filter') filter?:string
+     
+     ){
+    return this.entregraService.findAllForPessoas(id,take,skip,filter);
+  }
+
 }
