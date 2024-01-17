@@ -1,7 +1,10 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { BeneficioService } from './beneficio.service';
 import { Prisma } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
+@UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('beneficio')
 export class BeneficioController {
   constructor(private readonly beneficioService: BeneficioService) {}
