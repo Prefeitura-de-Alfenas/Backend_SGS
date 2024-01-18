@@ -16,6 +16,11 @@ export class PessoaController {
   return this.pessoaService.findAll(take,skip,filter);
  }
 
+ @Get('datauserfind/:dateinicial/datefinal/:datefinal/:filter?')
+ async findallForRelatorioPorData(@Param('dateinicial') dateinicial:string, @Param('datefinal') datefinal:string, @Param('filter') filter?:string){
+  return this.pessoaService.findAllRelatorioPorData(dateinicial,datefinal,filter);
+ }
+
  @Post()
  async create(@Body() createPessoaDto:Prisma.PessoaCreateInput){
      return this.pessoaService.create(createPessoaDto)

@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import { CreateEntregaDto } from './DTO/EntregaCreate';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { BuscaEntrega } from './DTO/BuscaEntrega';
 
 @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('entregra')
@@ -34,6 +35,13 @@ export class EntregraController {
      
      ){
     return this.entregraService.findAllForPessoas(id,take,skip,filter);
+  }
+
+  @Post('entregarelatoriodate')
+  async findallForRelatorioPorData(
+    @Body() getBuscaDto:BuscaEntrega
+    ){
+   return this.entregraService.findAllRelatorioPorData(getBuscaDto);
   }
 
 }

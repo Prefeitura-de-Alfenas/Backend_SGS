@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateEntregaDto } from './DTO/EntregaCreate';
+import { addDays, format } from 'date-fns';
+import { BuscaEntrega } from './DTO/BuscaEntrega';
 
 @Injectable()
 export class EntregraService {
@@ -122,5 +124,57 @@ constructor(private prisma: PrismaService){}
     }catch(error){
         return {error: error.message};  
     }
-}
+  }
+
+  async findAllRelatorioPorData({dateinicial,datefinal,pessoId,usuarioId,equipamentoId,beneficioId}:BuscaEntrega) {
+    const formattedDateInicial = format(new Date(dateinicial), 'yyyy-MM-dd HH:mm:ss');
+    const formattedDateFinal = format(new Date(datefinal), 'yyyy-MM-dd HH:mm:ss');
+    const nextDayDateFinal = addDays(formattedDateFinal, 1);
+
+  console.log("sdjfçsldkjfsdçljfslkj")
+ 
+
+     const whereClause: {
+      pessoId?:string;
+      equipamentoId?:string
+      usuarioId?:string
+      beneficioId?:string
+      status: any;
+      datacadastro: {
+        gte: Date;
+        lte: Date;
+      };
+    } = {
+          status: 'ativo',
+          datacadastro: {
+            gte: new Date(formattedDateInicial), // 'gte' significa "maior ou igual a"
+            lte: new Date(nextDayDateFinal),   // 'lte' significa "menor ou igual a"
+          },
+    };
+  
+
+
+    if (pessoId) {
+      whereClause.pessoId = pessoId;
+
+    } 
+    if (equipamentoId) {
+      whereClause.equipamentoId = equipamentoId;
+
+    } 
+    if (usuarioId) {
+      whereClause.usuarioId = usuarioId;
+    } 
+    if (beneficioId) {
+      whereClause.beneficioId = beneficioId;
+    } 
+     const entregas = await this.prisma.entrega.findMany({
+        where: whereClause,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+    return entregas;
+  
+  }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-
+import { addDays, format } from 'date-fns';
 @Injectable()
 export class PessoaService {
  
@@ -163,7 +163,32 @@ export class PessoaService {
      return pessoas;
     }
 
-   async findById(id:string) {
+    async findAllRelatorioPorData(dateinicial:string,datefinal:string,filter:string) {
+      const formattedDateInicial = format(new Date(dateinicial), 'yyyy-MM-dd HH:mm:ss');
+    const formattedDateFinal = format(new Date(datefinal), 'yyyy-MM-dd HH:mm:ss');
+    const nextDayDateFinal = addDays(formattedDateFinal, 1);
+   console.log(formattedDateInicial)
+   console.log(nextDayDateFinal)
+        const pessoas = await this.prisma.pessoa.findMany({
+          where: {
+            nome: {
+              contains: filter,
+            },
+            status: 'ativo',
+            createdAt: {
+              gte: new Date(formattedDateInicial), // 'gte' significa "maior ou igual a"
+              lte: new Date(nextDayDateFinal),   // 'lte' significa "menor ou igual a"
+            },
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        });
+      return pessoas;
+    
+    }
+
+    async findById(id:string) {
     try{
     const pessoa = await this.prisma.pessoa.findUnique({
       where:{
@@ -182,7 +207,7 @@ export class PessoaService {
   catch(error){
     return error.message;
     }
-  }
+    }
 
    async findAllFamiliares(id:string,take:string,skip:string,filter:string){
     const takeNumber = parseInt(take);
