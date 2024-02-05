@@ -131,7 +131,7 @@ constructor(private prisma: PrismaService){}
     const formattedDateFinal = format(new Date(datefinal), 'yyyy-MM-dd HH:mm:ss');
     const nextDayDateFinal = addDays(formattedDateFinal, 1);
 
-  console.log("sdjfçsldkjfsdçljfslkj")
+ 
  
 
      const whereClause: {
