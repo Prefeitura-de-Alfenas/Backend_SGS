@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { EntregraService } from './entregra.service';
 import { Prisma } from '@prisma/client';
 import { CreateEntregaDto } from './DTO/EntregaCreate';
@@ -42,6 +42,12 @@ export class EntregraController {
     @Body() getBuscaDto:BuscaEntrega
     ){
    return this.entregraService.findAllRelatorioPorData(getBuscaDto);
+  }
+
+  @Patch(':id')
+  async update(@Param('id') id: string){
+ 
+   return this.entregraService.changeStatus(id)
   }
 
 }

@@ -18,4 +18,6 @@ export class BuscaEntrega {
 
   
     beneficioId: string;
+
+    statusid:string;
 }

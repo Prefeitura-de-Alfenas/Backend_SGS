@@ -35,6 +35,7 @@ constructor(private prisma: PrismaService){}
              datacadastro: {
               gte: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000), // Subtrai 30 dias da data atual
             },
+            status:'ativo'
           }
         })
         console.log(beneficioModelador)
@@ -126,7 +127,7 @@ constructor(private prisma: PrismaService){}
     }
   }
 
-  async findAllRelatorioPorData({dateinicial,datefinal,pessoId,usuarioId,equipamentoId,beneficioId}:BuscaEntrega) {
+  async findAllRelatorioPorData({dateinicial,datefinal,pessoId,usuarioId,equipamentoId,beneficioId,statusid}:BuscaEntrega) {
     const formattedDateInicial = format(new Date(dateinicial), 'yyyy-MM-dd HH:mm:ss');
     const formattedDateFinal = format(new Date(datefinal), 'yyyy-MM-dd HH:mm:ss');
     const nextDayDateFinal = addDays(formattedDateFinal, 1);
@@ -150,6 +151,7 @@ constructor(private prisma: PrismaService){}
             gte: new Date(formattedDateInicial), // 'gte' significa "maior ou igual a"
             lte: new Date(nextDayDateFinal),   // 'lte' significa "menor ou igual a"
           },
+          
     };
   
 
@@ -168,8 +170,18 @@ constructor(private prisma: PrismaService){}
     if (beneficioId) {
       whereClause.beneficioId = beneficioId;
     } 
+
+    if(statusid){
+      whereClause.status = statusid;
+    }
      const entregas = await this.prisma.entrega.findMany({
         where: whereClause,
+        include:{
+          equipamento:true,
+          beneficio:true,
+          pessoa:true,
+          usuario:true,
+        },
         orderBy: {
           createdAt: 'desc',
         },
@@ -177,4 +189,23 @@ constructor(private prisma: PrismaService){}
     return entregas;
   
   }
+
+  async changeStatus(id: string) {
+    const entrega = await this.prisma.entrega.findUnique({
+        where:{id}
+    })
+    if(!entrega){
+        return ({error:'Entrega não existe'})
+    }
+   
+    const changeUser = await this.prisma.entrega.update({
+        where:{
+            id
+        },
+        data:{
+            status:entrega.status == 'ativo' ? 'inativo' : 'ativo'
+        }
+    })
+    return changeUser
+}
 }
