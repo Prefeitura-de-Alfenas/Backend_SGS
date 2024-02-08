@@ -1,12 +1,19 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { PessoaService } from './pessoa.service';
 import { Prisma } from '@prisma/client';
 import { filter } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-
-
+import {FileInterceptor} from "@nestjs/platform-express";
+import {diskStorage} from "multer";
+import {Response} from "express";
+import  * as path from "path";
+import { randomUUID } from 'crypto';
+import * as fs from 'fs';
+interface FileParams {
+  fileName : string;
+}
 @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('pessoa')
 export class PessoaController {
@@ -67,4 +74,9 @@ export class PessoaController {
   return this.pessoaService.findAllInativePessoas(take,skip,filter);
  }
 
+
+
 }
+
+
+

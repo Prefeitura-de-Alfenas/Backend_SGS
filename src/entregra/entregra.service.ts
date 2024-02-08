@@ -19,10 +19,22 @@ constructor(private prisma: PrismaService){}
             id:createEntregaDTO.usuarioId
           }
         })
+
+        const pessoa = await this.prisma.pessoa.findUnique({
+          where:{
+            id:createEntregaDTO.pessoId
+          }
+        })
+
         if(!usuario){
           return {error:"Usuario não existe"}
         }
-        if(usuario.equipamentoId !== createEntregaDTO.equipamentoId){
+        if(!pessoa){
+          return {error:"Familia não existe"}
+        }
+        console.log('usuario.equipamentoId',usuario.equipamentoId)
+        console.log('createEntregaDTO.equipamentoId',createEntregaDTO.equipamentoId)
+        if(usuario.equipamentoId !== pessoa.equipamentoId){
           return {error:"Este usuario não pode gerar o beneficio para essa familia, essa familia ou usuario e atendido em outro equipamento"}
         }
 

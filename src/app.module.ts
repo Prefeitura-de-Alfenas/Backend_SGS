@@ -8,10 +8,11 @@ import { PessoaModule } from './pessoa/pessoa.module';
 import { EquipamentoModule } from './equipamento/equipamento.module';
 import { BeneficioModule } from './beneficio/beneficio.module';
 import { EntregraModule } from './entregra/entregra.module';
+import { ArquivoModule } from './arquivo/arquivo.module';
 
 
 @Module({
-  imports: [PrismaModule, UsuarioModule,AuthModule, PessoaModule, EquipamentoModule, BeneficioModule, EntregraModule],
+  imports: [PrismaModule, UsuarioModule,AuthModule, PessoaModule, EquipamentoModule, BeneficioModule, EntregraModule, ArquivoModule],
   controllers: [AppController],
   providers: [AppService],
 })
