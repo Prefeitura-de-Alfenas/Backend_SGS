@@ -22,6 +22,19 @@ interface DeleteFileParams {
 @Controller('arquivo')
 export class ArquivoController {
   constructor(private readonly arquivoService: ArquivoService) {}
+  
+  @Get('findallforpessoas/:id/take/:take/skip/:skip/:filter?')
+  async GetAllForPessoas(
+      @Param('id') id: string,
+      @Param('take') take:string,
+      @Param('skip') skip:string, 
+      @Param('filter') filter?:string
+     
+      ){
+     return this.arquivoService.findAllForPessoas(id,take,skip,filter);
+  }
+
+
   @Post("/upload")
   @UseInterceptors(FileInterceptor('file', {
      storage: diskStorage({
@@ -50,11 +63,15 @@ export class ArquivoController {
    }
  
   
-   @Get("/file/getfile")
-   getFile(@Res() res : Response , @Body() file : FileParams)
+   @Get("/file/getfile/:id")
+  async getFile(@Res() res : Response ,   @Param('id') id: string)
    {
+      const arquivo = await this.arquivoService.getFile(id);
+       if(!arquivo){
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({error:'Erro ao buscar esse arquivo'});
+       }
      const uploadsDir = path.resolve(process.cwd(), 'uploads'); // Caminho absoluto para a pasta de uploads
-     const filePath = path.join(uploadsDir, file.fileName);
+     const filePath = path.join(uploadsDir, arquivo.url);
 
      res.sendFile(filePath, (err) => {
       if (err) {
@@ -62,13 +79,12 @@ export class ArquivoController {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({error:'Erro ao buscar esse arquivo'});
       }
     });
-     //prod
-     // res.sendFile(path.join(__dirname , "../uploads/" + file.fileName));
+     
    }
  
  
-   @Get("/file/delete")
-   deleteFile(@Body() {arquivoId}: DeleteFileParams) {
+   @Get("/file/delete/:id")
+   deleteFile(@Param('id') id: string,) {
     //  const uploadsDir = path.resolve(process.cwd(), 'uploads'); // Caminho absoluto para a pasta de uploads
     //  const filePath = path.join(uploadsDir, file.fileName);
      
@@ -86,7 +102,7 @@ export class ArquivoController {
     //  } else {
     //    res.status(HttpStatus.NOT_FOUND).send('Arquivo não encontrado');
     //  }
-    return this.arquivoService.deleteFile(arquivoId);
+    return this.arquivoService.deleteFile(id);
    }
 
 }
