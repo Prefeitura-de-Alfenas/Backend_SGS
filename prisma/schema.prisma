@@ -63,6 +63,7 @@ model Pessoa {
     renda Decimal @db.Decimal(10,2)
     ctpsassinada Int
     ppcl Int
+    gestante Int
     observacao String?
     observacaorestrita String?
     cep String
