@@ -219,5 +219,5 @@ constructor(private prisma: PrismaService){}
         }
     })
     return changeUser
-}
+  }
 }
