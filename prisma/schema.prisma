@@ -64,8 +64,8 @@ model Pessoa {
     ctpsassinada Int
     ppcl Int
     gestante Int
-    observacao String?
-    observacaorestrita String?
+    observacao String? @db.Text
+    observacaorestrita  String? @db.Text
     cep String
     logradouro String
     complemento String?

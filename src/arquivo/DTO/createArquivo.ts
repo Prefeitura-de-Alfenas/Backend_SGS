@@ -1,14 +1,9 @@
-import {IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateArquivo {
+  @IsNotEmpty()
+  nome: string;
 
-    @IsNotEmpty()
-    nome:string;
-
-
-    @IsNotEmpty()
-    pessoId: string;
-
-  
- 
+  @IsNotEmpty()
+  pessoId: string;
 }

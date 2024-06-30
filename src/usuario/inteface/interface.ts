@@ -1,4 +1,4 @@
-export interface IPermissaoChangeUser{
-    userId:string;
-    permissionId:string;
+export interface IPermissaoChangeUser {
+  userId: string;
+  permissionId: string;
 }
