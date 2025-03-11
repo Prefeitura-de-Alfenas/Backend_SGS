@@ -38,4 +38,4 @@ COPY --from=build /app/prisma /app/prisma
 EXPOSE 3000
 
 # Comando para iniciar a aplicação em modo de produção
-CMD ["npm", "run", "start:prod"]
+CMD ["node", "dist/src/main.js"]

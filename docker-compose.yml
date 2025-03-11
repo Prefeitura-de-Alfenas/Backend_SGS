@@ -4,6 +4,7 @@ services:
   app:
     build: .
     image: marceloroot/nestjs_sgs:latest
+    restart: always
     networks:
       - traefik_public
     labels:
