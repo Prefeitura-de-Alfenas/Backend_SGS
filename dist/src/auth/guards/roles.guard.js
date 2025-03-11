@@ -9,14 +9,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RolesGuard = void 0;
-exports.matchRoles = matchRoles;
+exports.RolesGuard = exports.matchRoles = void 0;
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const roles_decorator_1 = require("../decorators/roles.decorator");
 function matchRoles(requiredRoles, userRoles) {
     return userRoles.some((userRole) => requiredRoles.includes(userRole));
 }
+exports.matchRoles = matchRoles;
 let RolesGuard = class RolesGuard {
     constructor(reflector) {
         this.reflector = reflector;

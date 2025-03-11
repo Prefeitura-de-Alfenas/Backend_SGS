@@ -8,7 +8,7 @@ export declare class UsuarioService {
         id: string;
         nome: string;
         createdAt: Date;
-        updatedAt: Date | null;
+        updatedAt: Date;
     }[]>;
     permissaoChangeUser({ userId, permissionId }: IPermissaoChangeUser): Promise<{
         error: string;
@@ -19,32 +19,32 @@ export declare class UsuarioService {
     }>;
     findAllPermissaoUser(id: string): Promise<{
         permissoes: {
-            createdAt: Date;
-            updatedAt: Date | null;
             usuarioId: string;
             permissaoId: string;
+            createdAt: Date;
+            updatedAt: Date;
         }[];
     } & {
         id: string;
         nome: string;
-        createdAt: Date;
-        updatedAt: Date | null;
-        status: import(".prisma/client").$Enums.status_code;
         email: string;
         senha: string;
         telefone: string;
+        status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     updateUsuario(id: string, createUsuarioDto: Prisma.UsuarioUpdateInput): Promise<{
         id: string;
         nome: string;
-        createdAt: Date;
-        updatedAt: Date | null;
-        status: import(".prisma/client").$Enums.status_code;
         email: string;
         senha: string;
         telefone: string;
+        status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
+        createdAt: Date;
+        updatedAt: Date;
     } | {
         error: string;
     }>;
@@ -52,41 +52,41 @@ export declare class UsuarioService {
         equipamento: {
             id: string;
             nome: string;
-            createdAt: Date;
-            updatedAt: Date | null;
             responsavel: string;
             sobre: string;
             observacao: string;
             cep: string;
             logradouro: string;
-            complemento: string | null;
+            complemento: string;
             bairro: string;
             localidade: string;
             numero: string;
             uf: string;
             status: import(".prisma/client").$Enums.status_code;
+            createdAt: Date;
+            updatedAt: Date;
         };
     } & {
         id: string;
         nome: string;
-        createdAt: Date;
-        updatedAt: Date | null;
-        status: import(".prisma/client").$Enums.status_code;
         email: string;
         senha: string;
         telefone: string;
+        status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     changeStatus(id: string): Promise<{
         id: string;
         nome: string;
-        createdAt: Date;
-        updatedAt: Date | null;
-        status: import(".prisma/client").$Enums.status_code;
         email: string;
         senha: string;
         telefone: string;
+        status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
+        createdAt: Date;
+        updatedAt: Date;
     } | {
         error: string;
     }>;
@@ -96,59 +96,59 @@ export declare class UsuarioService {
         senha: any;
         id: string;
         nome: string;
-        createdAt: Date;
-        updatedAt: Date | null;
-        status: import(".prisma/client").$Enums.status_code;
         email: string;
         telefone: string;
+        status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
+        createdAt: Date;
+        updatedAt: Date;
         error?: undefined;
     }>;
     findbyemail(email: string): Promise<{
         permissoes: string[];
         id: string;
         nome: string;
-        createdAt: Date;
-        updatedAt: Date | null;
-        status: import(".prisma/client").$Enums.status_code;
         email: string;
         senha: string;
         telefone: string;
+        status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     findAll(): Promise<({
         equipamento: {
             id: string;
             nome: string;
-            createdAt: Date;
-            updatedAt: Date | null;
             responsavel: string;
             sobre: string;
             observacao: string;
             cep: string;
             logradouro: string;
-            complemento: string | null;
+            complemento: string;
             bairro: string;
             localidade: string;
             numero: string;
             uf: string;
             status: import(".prisma/client").$Enums.status_code;
+            createdAt: Date;
+            updatedAt: Date;
         };
     } & {
         id: string;
         nome: string;
-        createdAt: Date;
-        updatedAt: Date | null;
-        status: import(".prisma/client").$Enums.status_code;
         email: string;
         senha: string;
         telefone: string;
+        status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     createpermissao(createPermissaoDto: Prisma.PermissaoCreateInput): Promise<{
         id: string;
         nome: string;
         createdAt: Date;
-        updatedAt: Date | null;
+        updatedAt: Date;
     }>;
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UsuarioService } from 'src/usuario/usuario.service';
-import * as bccrypt from 'bcrypt';
+import * as bccrypt from 'bcryptjs';
 import { Prisma } from '@prisma/client';
 import { UserPayload } from './models/membro-payload';
 import { JwtService } from '@nestjs/jwt';

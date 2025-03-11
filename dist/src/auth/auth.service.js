@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const usuario_service_1 = require("../usuario/usuario.service");
-const bccrypt = require("bcrypt");
+const bccrypt = require("bcryptjs");
 const jwt_1 = require("@nestjs/jwt");
 let AuthService = class AuthService {
     constructor(usuarioService, jwtService) {

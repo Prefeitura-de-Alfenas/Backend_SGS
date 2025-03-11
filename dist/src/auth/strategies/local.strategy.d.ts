@@ -9,12 +9,12 @@ export declare class LocalStrategy extends LocalStrategy_base {
         permissoes: string[];
         id: string;
         nome: string;
-        createdAt: Date;
-        updatedAt: Date | null;
-        status: import(".prisma/client").$Enums.status_code;
         email: string;
         telefone: string;
+        status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
 }
 export {};

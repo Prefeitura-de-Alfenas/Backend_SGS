@@ -5,85 +5,85 @@ export declare class BeneficioService {
     constructor(prisma: PrismaService);
     AddBeneficioPessoa(id: string, pessoaid: string): Promise<({
         beneficios: {
-            createdAt: Date;
-            updatedAt: Date | null;
             pessoaId: string;
             beneficioId: string;
+            createdAt: Date;
+            updatedAt: Date;
         }[];
     } & {
         id: string;
         nome: string;
-        createdAt: Date;
-        updatedAt: Date | null;
-        observacao: string | null;
-        cep: string;
-        logradouro: string;
-        complemento: string | null;
-        bairro: string;
-        localidade: string;
-        numero: string;
-        uf: string;
-        status: import(".prisma/client").$Enums.status_code;
-        email: string | null;
-        telefone: string | null;
-        equipamentoId: string;
         cpf: string;
         sexo: string;
+        telefone: string;
+        email: string;
         datanascimento: Date;
-        rg: string | null;
-        parentesco: string | null;
+        rg: string;
+        parentesco: string;
         escolaridade: string;
         estadocivil: string;
         renda: Prisma.Decimal;
         ctpsassinada: number;
         ppcl: number;
         gestante: number;
-        observacaorestrita: string | null;
-        pessoaId: string | null;
+        observacao: string;
+        observacaorestrita: string;
+        cep: string;
+        logradouro: string;
+        complemento: string;
+        bairro: string;
+        localidade: string;
+        numero: string;
+        uf: string;
+        status: import(".prisma/client").$Enums.status_code;
+        equipamentoId: string;
+        pessoaId: string;
+        createdAt: Date;
+        updatedAt: Date;
     }) | {
         error: string;
     }>;
     create(createBeneficioDTO: Prisma.BeneficioCreateInput): Promise<{
         id: string;
         nome: string;
-        createdAt: Date;
-        updatedAt: Date | null;
-        status: import(".prisma/client").$Enums.status_code;
         descricao: string;
         categoria: string;
         valor: Prisma.Decimal;
+        status: import(".prisma/client").$Enums.status_code;
+        createdAt: Date;
+        updatedAt: Date;
     } | {
         error: any;
     }>;
     findById(id: string): Promise<any>;
     findAll(take: string, skip: string, filter: string): Promise<({
         pessoas: {
-            createdAt: Date;
-            updatedAt: Date | null;
             pessoaId: string;
             beneficioId: string;
+            createdAt: Date;
+            updatedAt: Date;
         }[];
     } & {
         id: string;
         nome: string;
-        createdAt: Date;
-        updatedAt: Date | null;
-        status: import(".prisma/client").$Enums.status_code;
         descricao: string;
         categoria: string;
         valor: Prisma.Decimal;
+        status: import(".prisma/client").$Enums.status_code;
+        createdAt: Date;
+        updatedAt: Date;
     })[] | {
         error: any;
     }>;
     update(id: string, updateBeneficioDTO: Prisma.BeneficioUpdateInput): Promise<{
         id: string;
         nome: string;
-        createdAt: Date;
-        updatedAt: Date | null;
-        status: import(".prisma/client").$Enums.status_code;
         descricao: string;
         categoria: string;
         valor: Prisma.Decimal;
+        status: import(".prisma/client").$Enums.status_code;
+        createdAt: Date;
+        updatedAt: Date;
     } | {
         error: any;
     }>;
