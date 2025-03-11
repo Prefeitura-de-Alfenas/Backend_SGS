@@ -15,6 +15,7 @@ services:
       - "traefik.http.routers.nestjs_sgs.entrypoints=websecure"
     environment:
       DATABASE_URL: "mysql://root:AA88xk62@187.87.80.22:3306/db_sgs"
+      JWT_SECRET: "433498939"
 
 networks:
   traefik_public:
