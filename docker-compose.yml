@@ -3,7 +3,7 @@ version: '3.8'
 services:
   app:
     build: .
-    image: marceloroot/nestjs_sgs:latest
+    container_name: nestjs_sgs
     networks:
       - traefik_public
     labels:
