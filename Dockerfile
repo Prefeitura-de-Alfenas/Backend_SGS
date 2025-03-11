@@ -34,6 +34,9 @@ COPY --from=build /app/dist /app/dist
 COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/prisma /app/prisma
 
+# Copia o arquivo .env
+COPY .env .env
+
 # Expõe a porta 3000
 EXPOSE 3000
 
