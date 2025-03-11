@@ -22,5 +22,4 @@ services:
 
 networks:
   traefik_public:
-    driver: bridge
-    attachable: true
+    external: true
