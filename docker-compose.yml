@@ -20,5 +20,5 @@ services:
 
 networks:
   traefik_public:
-    external: true
-    name: traefik_public
+    driver: overlay
+    attachable: true
