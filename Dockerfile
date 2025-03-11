@@ -37,8 +37,8 @@ COPY --from=build /app/prisma /app/prisma
 # Copia o arquivo .env
 COPY .env .env
 
-# Expõe a porta 3000
-EXPOSE 3000
+# Expõe a porta 3015 (conforme definido no seu docker-compose.yml)
+EXPOSE 3015
 
-# Comando para iniciar a aplicação em modo de produção
-CMD ["node", "dist/src/main.js"]
+# Comando para iniciar a aplicação em modo de produção usando npm start:prod
+CMD ["npm", "run", "start:prod"]
