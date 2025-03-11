@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: nestjs_sgs
+    networks:
+      - traefik_public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nestjs_sgs.rule=Host(`api.sgs.alfenas.mg.gov.br`)"
+      - "traefik.http.services.nestjs_sgs.loadbalancer.server.port=3000"
+      - "traefik.http.routers.nestjs_sgs.tls=true"
+      - "traefik.http.routers.nestjs_sgs.tls.certresolver=le"
+      - "traefik.http.routers.nestjs_sgs.entrypoints=websecure"
+    environment:
+      DATABASE_URL: "mysql://root:AA88xk62@187.87.80.22:3306/db_sgs"
+
+networks:
+  traefik_public:
+    external: true
