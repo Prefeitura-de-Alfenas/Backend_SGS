@@ -2,14 +2,12 @@ version: '3.8'
 
 services:
   app:
-    build: .
+    image: sgs_app:latest
     networks:
       - traefik_public
     environment:
       DATABASE_URL: "mysql://root:AA88xk62@187.87.80.22:3306/db_sgs"
       JWT_SECRET: "433498939"
-    expose:
-      - "3015"
     deploy:
       mode: replicated
       replicas: 1
