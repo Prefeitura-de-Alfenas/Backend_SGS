@@ -39,6 +39,9 @@ let PessoaController = class PessoaController {
     async findbyid(id) {
         return this.pessoaService.findById(id);
     }
+    async findFamiliiaresByid(id) {
+        return this.pessoaService.findFamiliiaresByid(id);
+    }
     async findbyidEntrega(id) {
         return this.pessoaService.findbyidEntrega(id);
     }
@@ -97,6 +100,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], PessoaController.prototype, "findbyid", null);
+__decorate([
+    (0, common_1.Get)('pessoafamiliares/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PessoaController.prototype, "findFamiliiaresByid", null);
 __decorate([
     (0, common_1.Get)('entrega/:id'),
     __param(0, (0, common_1.Param)('id')),

@@ -16,6 +16,10 @@ enum status_code {
     ativo
     inativo
     expirado
+    bloqueado
+    cancelado
+    pendente
+    aprovado
 }
 
 
@@ -151,7 +155,7 @@ model Entrega{
     quantidade  Int
     observacao  String
     datacadastro DateTime  @default(now())
-    status status_code  @default(ativo)
+    status status_code  @default(pendente)
    
     pessoa Pessoa @relation(fields: [pessoId], references: [id])
     pessoId String

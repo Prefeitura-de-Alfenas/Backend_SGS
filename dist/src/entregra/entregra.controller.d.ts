@@ -1,5 +1,4 @@
 import { EntregraService } from './entregra.service';
-import { Prisma } from '@prisma/client';
 import { CreateEntregaDto } from './DTO/EntregaCreate';
 import { BuscaEntrega } from './DTO/BuscaEntrega';
 export declare class EntregraController {
@@ -33,7 +32,7 @@ export declare class EntregraController {
             parentesco: string;
             escolaridade: string;
             estadocivil: string;
-            renda: Prisma.Decimal;
+            renda: import("@prisma/client/runtime/library").Decimal;
             ctpsassinada: number;
             ppcl: number;
             gestante: number;
@@ -57,7 +56,7 @@ export declare class EntregraController {
             nome: string;
             descricao: string;
             categoria: string;
-            valor: Prisma.Decimal;
+            valor: import("@prisma/client/runtime/library").Decimal;
             status: import(".prisma/client").$Enums.status_code;
             createdAt: Date;
             updatedAt: Date;
@@ -118,7 +117,7 @@ export declare class EntregraController {
             parentesco: string;
             escolaridade: string;
             estadocivil: string;
-            renda: Prisma.Decimal;
+            renda: import("@prisma/client/runtime/library").Decimal;
             ctpsassinada: number;
             ppcl: number;
             gestante: number;
@@ -142,7 +141,7 @@ export declare class EntregraController {
             nome: string;
             descricao: string;
             categoria: string;
-            valor: Prisma.Decimal;
+            valor: import("@prisma/client/runtime/library").Decimal;
             status: import(".prisma/client").$Enums.status_code;
             createdAt: Date;
             updatedAt: Date;
@@ -175,7 +174,7 @@ export declare class EntregraController {
             parentesco: string;
             escolaridade: string;
             estadocivil: string;
-            renda: Prisma.Decimal;
+            renda: import("@prisma/client/runtime/library").Decimal;
             ctpsassinada: number;
             ppcl: number;
             gestante: number;
@@ -199,7 +198,7 @@ export declare class EntregraController {
             nome: string;
             descricao: string;
             categoria: string;
-            valor: Prisma.Decimal;
+            valor: import("@prisma/client/runtime/library").Decimal;
             status: import(".prisma/client").$Enums.status_code;
             createdAt: Date;
             updatedAt: Date;
@@ -260,7 +259,7 @@ export declare class EntregraController {
             parentesco: string;
             escolaridade: string;
             estadocivil: string;
-            renda: Prisma.Decimal;
+            renda: import("@prisma/client/runtime/library").Decimal;
             ctpsassinada: number;
             ppcl: number;
             gestante: number;
@@ -284,7 +283,7 @@ export declare class EntregraController {
             nome: string;
             descricao: string;
             categoria: string;
-            valor: Prisma.Decimal;
+            valor: import("@prisma/client/runtime/library").Decimal;
             status: import(".prisma/client").$Enums.status_code;
             createdAt: Date;
             updatedAt: Date;

@@ -141,6 +141,7 @@ export declare class PessoaService {
         updatedAt: Date;
     }[]>;
     findById(id: string): Promise<any>;
+    findFamiliiaresByid(id: string): Promise<any>;
     findAllFamiliares(id: string, take: string, skip: string, filter: string): Promise<{
         id: string;
         nome: string;

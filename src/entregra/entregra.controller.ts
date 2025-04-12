@@ -8,7 +8,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { EntregraService } from './entregra.service';
-import { Prisma } from '@prisma/client';
 import { CreateEntregaDto } from './DTO/EntregaCreate';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';

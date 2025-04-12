@@ -35,29 +35,6 @@ let EntregraService = class EntregraService {
             if (!pessoa) {
                 return { error: 'Familia não existe' };
             }
-            console.log('usuario.equipamentoId', usuario.equipamentoId);
-            console.log('createEntregaDTO.equipamentoId', createEntregaDTO.equipamentoId);
-            if (usuario.equipamentoId !== pessoa.equipamentoId) {
-                return {
-                    error: 'Este usuario não pode gerar o beneficio para essa familia, essa familia ou usuario e atendido em outro equipamento',
-                };
-            }
-            const beneficioModelador = await this.prisma.entrega.findMany({
-                where: {
-                    pessoId: createEntregaDTO.pessoId,
-                    beneficioId: createEntregaDTO.beneficioId,
-                    datacadastro: {
-                        gte: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000),
-                    },
-                    status: 'ativo',
-                },
-            });
-            console.log(beneficioModelador);
-            if (beneficioModelador.length !== 0) {
-                return {
-                    error: 'Esse beneficio já foi entregue esse mês para essa familia',
-                };
-            }
             const entrega = await this.prisma.entrega.create({
                 data: createEntregaDTO,
             });

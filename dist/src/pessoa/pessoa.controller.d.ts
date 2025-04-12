@@ -100,6 +100,7 @@ export declare class PessoaController {
         error: any;
     }>;
     findbyid(id: string): Promise<any>;
+    findFamiliiaresByid(id: string): Promise<any>;
     findbyidEntrega(id: string): Promise<any>;
     update(id: string, updatePessoaDto: Prisma.PessoaUpdateInput): Promise<{
         id: string;

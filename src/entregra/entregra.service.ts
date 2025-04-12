@@ -29,36 +29,31 @@ export class EntregraService {
       if (!pessoa) {
         return { error: 'Familia não existe' };
       }
-      console.log('usuario.equipamentoId', usuario.equipamentoId);
-      console.log(
-        'createEntregaDTO.equipamentoId',
-        createEntregaDTO.equipamentoId,
-      );
-      if (usuario.equipamentoId !== pessoa.equipamentoId) {
-        return {
-          error:
-            'Este usuario não pode gerar o beneficio para essa familia, essa familia ou usuario e atendido em outro equipamento',
-        };
-      }
+      // if (usuario.equipamentoId !== pessoa.equipamentoId) {
+      //   return {
+      //     error:
+      //       'Este usuario não pode gerar o beneficio para essa familia, essa familia ou usuario e atendido em outro equipamento',
+      //   };
+      // }
 
       //verificar se a data de criação ja faz 30 dias
       //buscar pessoa e o beneficio que essa pessoa tem com id do beneficio id e verficar se tem data menor que 30 dias
-      const beneficioModelador = await this.prisma.entrega.findMany({
-        where: {
-          pessoId: createEntregaDTO.pessoId,
-          beneficioId: createEntregaDTO.beneficioId,
-          datacadastro: {
-            gte: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000), // Subtrai 30 dias da data atual
-          },
-          status: 'ativo',
-        },
-      });
-      console.log(beneficioModelador);
-      if (beneficioModelador.length !== 0) {
-        return {
-          error: 'Esse beneficio já foi entregue esse mês para essa familia',
-        };
-      }
+      // const beneficioModelador = await this.prisma.entrega.findMany({
+      //   where: {
+      //     pessoId: createEntregaDTO.pessoId,
+      //     beneficioId: createEntregaDTO.beneficioId,
+      //     datacadastro: {
+      //       gte: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000), // Subtrai 30 dias da data atual
+      //     },
+      //     status: 'ativo',
+      //   },
+      // });
+ 
+      // if (beneficioModelador.length !== 0) {
+      //   return {
+      //     error: 'Esse beneficio já foi entregue esse mês para essa familia',
+      //   };
+      // }
 
       const entrega = await this.prisma.entrega.create({
         data: createEntregaDTO,

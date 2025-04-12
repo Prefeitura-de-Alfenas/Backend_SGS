@@ -253,6 +253,45 @@ export class PessoaService {
       return error.message;
     }
   }
+  async findFamiliiaresByid(id: string) {
+    try {
+      const pessoa = await this.prisma.pessoa.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          equipamento: true,
+          beneficios: true,
+          familiares: true,
+          entregas: {
+            include: {
+              beneficio: {
+                select: {
+                  nome: true,
+                },
+              },
+              equipamento: {
+                select: {
+                  nome: true,
+                },
+              },
+              usuario: {
+                select: {
+                  nome: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      if (!pessoa) {
+        return { error: 'Pessoa não existe no sistema' };
+      }
+      return pessoa;
+    } catch (error) {
+      return error.message;
+    }
+  }
 
   async findAllFamiliares(
     id: string,

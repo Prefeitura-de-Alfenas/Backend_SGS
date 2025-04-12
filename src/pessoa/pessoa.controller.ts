@@ -54,6 +54,11 @@ export class PessoaController {
     return this.pessoaService.findById(id);
   }
 
+  @Get('pessoafamiliares/:id')
+  async findFamiliiaresByid(@Param('id') id: string) {
+    return this.pessoaService.findFamiliiaresByid(id);
+  }
+
   @Get('entrega/:id')
   async findbyidEntrega(@Param('id') id: string) {
     return this.pessoaService.findbyidEntrega(id);
