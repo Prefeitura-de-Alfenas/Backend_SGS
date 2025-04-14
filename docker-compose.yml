@@ -8,6 +8,8 @@ services:
     environment:
       DATABASE_URL: "mysql://root:AA88xk62@187.87.80.22:3306/db_sgs"
       JWT_SECRET: "433498939"
+      ACCESS_KEY_MINIO: "bAn25VmcOAJXvgPb9HKj"
+      SECRET_KEY_MINIO: "iG2E2y6C0y88uZ1h6RgHSkrdfK5qSPxj81fmAppb"
     deploy:
       mode: replicated
       replicas: 1
