@@ -1,7 +1,10 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateArquivo } from './DTO/createArquivo';
+import { File } from 'multer';
 export declare class ArquivoService {
     private prisma;
+    private readonly minioClient;
+    private readonly bucketName;
     constructor(prisma: PrismaService);
     findAllForPessoas(id: string, take: string, skip: string, filter: string): Promise<({
         pessoa: {
@@ -45,7 +48,7 @@ export declare class ArquivoService {
     })[] | {
         error: any;
     }>;
-    uploadFile(file: any, data: CreateArquivo): Promise<{
+    uploadFile(file: File, data: CreateArquivo): Promise<{
         id: string;
         nome: string;
         url: string;
@@ -68,5 +71,4 @@ export declare class ArquivoService {
         success: string;
         error?: undefined;
     }>;
-    deleteArquivo(file: any): void;
 }

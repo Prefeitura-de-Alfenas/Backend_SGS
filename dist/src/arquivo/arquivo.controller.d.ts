@@ -55,7 +55,7 @@ export declare class ArquivoController {
         createdAt: Date;
         updatedAt: Date;
     }>;
-    getFile(res: Response, id: string): Promise<void>;
+    getFile(res: Response, id: string): Promise<void | Response<any, Record<string, any>>>;
     deleteFile(id: string): Promise<{
         error: string;
         success?: undefined;

@@ -18,10 +18,8 @@ const arquivo_service_1 = require("./arquivo.service");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const roles_guard_1 = require("../auth/guards/roles.guard");
 const platform_express_1 = require("@nestjs/platform-express");
-const multer_1 = require("multer");
-const path = require("path");
-const crypto_1 = require("crypto");
 const createArquivo_1 = require("./DTO/createArquivo");
+const multer_1 = require("multer");
 let ArquivoController = class ArquivoController {
     constructor(arquivoService) {
         this.arquivoService = arquivoService;
@@ -33,22 +31,21 @@ let ArquivoController = class ArquivoController {
         return this.arquivoService.uploadFile(file, data);
     }
     async getFile(res, id) {
-        const arquivo = await this.arquivoService.getFile(id);
-        if (!arquivo) {
-            res
-                .status(common_1.HttpStatus.INTERNAL_SERVER_ERROR)
-                .send({ error: 'Erro ao buscar esse arquivo' });
-        }
-        const uploadsDir = path.resolve(process.cwd(), 'uploads');
-        const filePath = path.join(uploadsDir, arquivo.url);
-        res.sendFile(filePath, (err) => {
-            if (err) {
-                console.error(err);
-                res
-                    .status(common_1.HttpStatus.INTERNAL_SERVER_ERROR)
-                    .send({ error: 'Erro ao buscar esse arquivo' });
+        try {
+            const arquivo = await this.arquivoService.getFile(id);
+            if (!arquivo || !arquivo.url) {
+                return res
+                    .status(common_1.HttpStatus.NOT_FOUND)
+                    .send({ error: 'Arquivo não encontrado' });
             }
-        });
+            return res.redirect(arquivo.url);
+        }
+        catch (err) {
+            console.error(err);
+            return res
+                .status(common_1.HttpStatus.INTERNAL_SERVER_ERROR)
+                .send({ error: 'Erro ao buscar arquivo' });
+        }
     }
     deleteFile(id) {
         return this.arquivoService.deleteFile(id);
@@ -68,13 +65,7 @@ __decorate([
 __decorate([
     (0, common_1.Post)('/upload'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
-        storage: (0, multer_1.diskStorage)({
-            destination: './uploads',
-            filename: (req, file, cb) => {
-                const randomName = (0, crypto_1.randomUUID)();
-                return cb(null, `${randomName}${path.extname(file.originalname)}`);
-            },
-        }),
+        storage: (0, multer_1.memoryStorage)(),
         fileFilter: (req, file, cb) => {
             const allowedMimes = ['image/jpeg', 'image/png', 'application/pdf'];
             if (allowedMimes.includes(file.mimetype)) {

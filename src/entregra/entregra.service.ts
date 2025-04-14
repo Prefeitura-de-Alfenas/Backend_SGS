@@ -54,6 +54,8 @@ export class EntregraService {
       //     error: 'Esse beneficio já foi entregue esse mês para essa familia',
       //   };
       // }
+      // eslint-disable-next-line prettier/prettier
+      console.log("pessoa",pessoa)
 
       const entrega = await this.prisma.entrega.create({
         data: createEntregaDTO,
@@ -78,7 +80,9 @@ export class EntregraService {
       const entrega = await this.prisma.entrega.findMany({
         where: {
           pessoId: id,
-          status: 'ativo',
+          status: {
+            in: ['ativo', 'pendente'],
+          },
         },
 
         include: {
@@ -102,7 +106,9 @@ export class EntregraService {
 
       const entrega = await this.prisma.entrega.findMany({
         where: {
-          status: 'ativo',
+          status: {
+            in: ['ativo', 'pendente'],
+          },
         },
 
         include: {
@@ -210,7 +216,17 @@ export class EntregraService {
     if (!entrega) {
       return { error: 'Entrega não existe' };
     }
-
+    if (entrega.status == 'pendente') {
+      const changeUser = await this.prisma.entrega.update({
+        where: {
+          id,
+        },
+        data: {
+          status: 'ativo',
+        },
+      });
+      return changeUser;
+    }
     const changeUser = await this.prisma.entrega.update({
       where: {
         id,

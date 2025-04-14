@@ -12,25 +12,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ArquivoService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
-const fs = require("fs/promises");
-const fssync = require("fs");
+const Minio = require("minio");
+const crypto_1 = require("crypto");
 const path = require("path");
 let ArquivoService = class ArquivoService {
     constructor(prisma) {
         this.prisma = prisma;
+        this.bucketName = 'sgs';
+        this.minioClient = new Minio.Client({
+            endPoint: 's3.alfenas.mg.gov.br',
+            useSSL: true,
+            accessKey: process.env.ACCESS_KEY_MINIO,
+            secretKey: process.env.SECRET_KEY_MINIO,
+        });
     }
     async findAllForPessoas(id, take, skip, filter) {
         try {
             const takeNumber = parseInt(take);
             const skipNumber = parseInt(skip);
-            const page = skipNumber == 0 ? skipNumber : skipNumber * takeNumber;
+            const page = skipNumber === 0 ? 0 : skipNumber * takeNumber;
             const entrega = await this.prisma.arquivo.findMany({
-                where: {
-                    pessoId: id,
-                },
-                include: {
-                    pessoa: true,
-                },
+                where: { pessoId: id },
+                include: { pessoa: true },
                 take: takeNumber,
                 skip: page,
             });
@@ -41,86 +44,52 @@ let ArquivoService = class ArquivoService {
         }
     }
     async uploadFile(file, data) {
+        if (!file) {
+            throw new common_1.HttpException('Nenhum arquivo foi enviado', common_1.HttpStatus.BAD_REQUEST);
+        }
+        const fileName = `${(0, crypto_1.randomUUID)()}${path.extname(file.originalname)}`;
         try {
-            if (!file) {
-                throw new common_1.HttpException('Nenhum arquivo foi enviado', common_1.HttpStatus.BAD_REQUEST);
+            const exists = await this.minioClient.bucketExists(this.bucketName);
+            if (!exists) {
+                await this.minioClient.makeBucket(this.bucketName, 'us-east-1');
             }
+            await this.minioClient.putObject(this.bucketName, fileName, file.buffer, file.buffer.length, {
+                'Content-Type': file.mimetype,
+            });
             const dataResponse = {
                 ...data,
-                url: file.filename,
+                url: fileName,
             };
-            const response = await this.prisma.arquivo.create({
-                data: dataResponse,
-            });
-            return response;
+            return await this.prisma.arquivo.create({ data: dataResponse });
         }
         catch (error) {
-            if (file) {
-                this.deleteArquivo(file);
-            }
-            if (error instanceof common_1.HttpException) {
-                throw error;
-            }
-            else {
-                throw new common_1.HttpException(error.message, common_1.HttpStatus.BAD_REQUEST);
-            }
+            console.error(error);
+            throw new common_1.HttpException('Erro ao enviar arquivo para o MinIO', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async getFile(id) {
-        const arquivo = await this.prisma.arquivo.findUnique({
-            where: { id },
-        });
+        const arquivo = await this.prisma.arquivo.findUnique({ where: { id } });
+        console.log('arquivo#', arquivo);
+        await this.minioClient.statObject(this.bucketName, arquivo.url.trim());
+        const url = await this.minioClient.presignedGetObject(this.bucketName, arquivo.url, 3600);
+        arquivo.url = url;
         return arquivo;
     }
     async deleteFile(id) {
         const arquivo = await this.prisma.arquivo.findUnique({
-            where: {
-                id,
-            },
+            where: { id },
         });
-        console.log(arquivo);
         if (!arquivo) {
             return { error: 'Arquivo não encontrado' };
         }
-        const uploadsDir = path.resolve(process.cwd(), 'uploads');
-        const filePath = path.join(uploadsDir, arquivo.url);
         try {
-            await fs.access(filePath);
-            await fs.unlink(filePath);
-            await this.prisma.arquivo.delete({
-                where: {
-                    id: arquivo.id,
-                },
-            });
+            await this.minioClient.removeObject(this.bucketName, arquivo.url);
+            await this.prisma.arquivo.delete({ where: { id: arquivo.id } });
             return { success: 'Arquivo excluído com sucesso' };
         }
         catch (error) {
-            if (error.code === 'ENOENT') {
-                return { error: 'Arquivo não encontrado' };
-            }
-            else {
-                console.error(error);
-                return { error: 'Erro ao excluir o arquivo' };
-            }
-        }
-    }
-    deleteArquivo(file) {
-        const uploadsDir = path.resolve(process.cwd(), 'uploads');
-        console.log(uploadsDir);
-        const filePath = path.join(uploadsDir, file.filename);
-        console.log(uploadsDir);
-        if (fssync.existsSync(filePath)) {
-            fssync.unlink(filePath, (err) => {
-                if (err) {
-                    console.log(err);
-                }
-                else {
-                    console.log('Arquivo excluído com sucesso');
-                }
-            });
-        }
-        else {
-            console.log('Arquivo não encontrado');
+            console.error(error);
+            return { error: 'Erro ao excluir o arquivo do MinIO' };
         }
     }
 };

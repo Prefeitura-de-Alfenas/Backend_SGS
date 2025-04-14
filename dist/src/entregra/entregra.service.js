@@ -35,6 +35,7 @@ let EntregraService = class EntregraService {
             if (!pessoa) {
                 return { error: 'Familia não existe' };
             }
+            console.log("pessoa", pessoa);
             const entrega = await this.prisma.entrega.create({
                 data: createEntregaDTO,
             });
@@ -52,7 +53,9 @@ let EntregraService = class EntregraService {
             const entrega = await this.prisma.entrega.findMany({
                 where: {
                     pessoId: id,
-                    status: 'ativo',
+                    status: {
+                        in: ['ativo', 'pendente'],
+                    },
                 },
                 include: {
                     pessoa: true,
@@ -74,7 +77,9 @@ let EntregraService = class EntregraService {
             const page = skipNumber == 0 ? skipNumber : skipNumber * takeNumber;
             const entrega = await this.prisma.entrega.findMany({
                 where: {
-                    status: 'ativo',
+                    status: {
+                        in: ['ativo', 'pendente'],
+                    },
                 },
                 include: {
                     pessoa: true,
@@ -152,6 +157,17 @@ let EntregraService = class EntregraService {
         });
         if (!entrega) {
             return { error: 'Entrega não existe' };
+        }
+        if (entrega.status == 'pendente') {
+            const changeUser = await this.prisma.entrega.update({
+                where: {
+                    id,
+                },
+                data: {
+                    status: 'ativo',
+                },
+            });
+            return changeUser;
         }
         const changeUser = await this.prisma.entrega.update({
             where: {

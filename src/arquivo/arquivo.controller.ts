@@ -26,6 +26,7 @@ import * as path from 'path';
 import { randomUUID } from 'crypto';
 import * as fs from 'fs';
 import { CreateArquivo } from './DTO/createArquivo';
+import { memoryStorage } from 'multer';
 interface FileParams {
   fileName: string;
 }
@@ -50,13 +51,7 @@ export class ArquivoController {
   @Post('/upload')
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const randomName = randomUUID();
-          return cb(null, `${randomName}${path.extname(file.originalname)}`);
-        },
-      }),
+      storage: memoryStorage(),
       fileFilter: (req, file, cb) => {
         const allowedMimes = ['image/jpeg', 'image/png', 'application/pdf'];
         if (allowedMimes.includes(file.mimetype)) {
@@ -76,23 +71,20 @@ export class ArquivoController {
 
   @Get('/file/getfile/:id')
   async getFile(@Res() res: Response, @Param('id') id: string) {
-    const arquivo = await this.arquivoService.getFile(id);
-    if (!arquivo) {
-      res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .send({ error: 'Erro ao buscar esse arquivo' });
-    }
-    const uploadsDir = path.resolve(process.cwd(), 'uploads'); // Caminho absoluto para a pasta de uploads
-    const filePath = path.join(uploadsDir, arquivo.url);
-
-    res.sendFile(filePath, (err) => {
-      if (err) {
-        console.error(err);
-        res
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .send({ error: 'Erro ao buscar esse arquivo' });
+    try {
+      const arquivo = await this.arquivoService.getFile(id);
+      if (!arquivo || !arquivo.url) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .send({ error: 'Arquivo não encontrado' });
       }
-    });
+      return res.redirect(arquivo.url); // redireciona para a URL do MinIO
+    } catch (err) {
+      console.error(err);
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .send({ error: 'Erro ao buscar arquivo' });
+    }
   }
 
   @Get('/file/delete/:id')
