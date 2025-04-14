@@ -55,7 +55,7 @@ export class EntregraService {
       //   };
       // }
       // eslint-disable-next-line prettier/prettier
-      console.log("pessoa",pessoa)
+
 
       const entrega = await this.prisma.entrega.create({
         data: createEntregaDTO,

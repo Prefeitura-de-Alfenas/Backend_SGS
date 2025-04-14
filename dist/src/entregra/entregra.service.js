@@ -35,7 +35,6 @@ let EntregraService = class EntregraService {
             if (!pessoa) {
                 return { error: 'Familia não existe' };
             }
-            console.log("pessoa", pessoa);
             const entrega = await this.prisma.entrega.create({
                 data: createEntregaDTO,
             });

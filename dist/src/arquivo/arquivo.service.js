@@ -69,7 +69,6 @@ let ArquivoService = class ArquivoService {
     }
     async getFile(id) {
         const arquivo = await this.prisma.arquivo.findUnique({ where: { id } });
-        console.log('arquivo#', arquivo);
         await this.minioClient.statObject(this.bucketName, arquivo.url.trim());
         const url = await this.minioClient.presignedGetObject(this.bucketName, arquivo.url, 3600);
         arquivo.url = url;

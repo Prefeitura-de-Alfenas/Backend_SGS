@@ -19,7 +19,6 @@ export class PessoaService {
       'data',
       'DadosCAD.csv',
     );
-    console.log('filePath', filePath);
     fs.createReadStream(filePath, { encoding: 'utf8' })
       .pipe(csv({ separator: ';' }))
       .on('data', (data) => results.push(data))
@@ -56,7 +55,6 @@ export class PessoaService {
                 equipamentoId: 'e2c023c0-913b-4cf5-8f68-a05d956904f3',
               },
             });
-            console.log('result', JSON.stringify(row, null, 2));
           } catch (error) {
             console.error(`Error inserting ${row.nome}: `, error);
           }
@@ -214,8 +212,6 @@ export class PessoaService {
       'yyyy-MM-dd HH:mm:ss',
     );
     const nextDayDateFinal = addDays(formattedDateFinal, 1);
-    console.log(formattedDateInicial);
-    console.log(nextDayDateFinal);
     const pessoas = await this.prisma.pessoa.findMany({
       where: {
         nome: {

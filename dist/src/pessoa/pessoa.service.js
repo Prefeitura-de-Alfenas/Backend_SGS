@@ -23,7 +23,6 @@ let PessoaService = class PessoaService {
     async importDataFromCsv() {
         const results = [];
         const filePath = path.join(__dirname, '..', '..', '..', 'mnt', 'data', 'DadosCAD.csv');
-        console.log('filePath', filePath);
         fs.createReadStream(filePath, { encoding: 'utf8' })
             .pipe(csv({ separator: ';' }))
             .on('data', (data) => results.push(data))
@@ -60,7 +59,6 @@ let PessoaService = class PessoaService {
                             equipamentoId: 'e2c023c0-913b-4cf5-8f68-a05d956904f3',
                         },
                     });
-                    console.log('result', JSON.stringify(row, null, 2));
                 }
                 catch (error) {
                     console.error(`Error inserting ${row.nome}: `, error);
@@ -198,8 +196,6 @@ let PessoaService = class PessoaService {
         const formattedDateInicial = (0, date_fns_1.format)(new Date(dateinicial), 'yyyy-MM-dd HH:mm:ss');
         const formattedDateFinal = (0, date_fns_1.format)(new Date(datefinal), 'yyyy-MM-dd HH:mm:ss');
         const nextDayDateFinal = (0, date_fns_1.addDays)(formattedDateFinal, 1);
-        console.log(formattedDateInicial);
-        console.log(nextDayDateFinal);
         const pessoas = await this.prisma.pessoa.findMany({
             where: {
                 nome: {

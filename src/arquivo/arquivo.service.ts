@@ -87,7 +87,6 @@ export class ArquivoService {
 
   async getFile(id: string) {
     const arquivo = await this.prisma.arquivo.findUnique({ where: { id } });
-    console.log('arquivo#', arquivo);
     await this.minioClient.statObject(this.bucketName, arquivo.url.trim());
 
     // Gera a URL assinada
