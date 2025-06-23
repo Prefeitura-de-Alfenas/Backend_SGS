@@ -104,7 +104,28 @@ let EntregraService = class EntregraService {
                     usuario: true,
                 },
             });
-            return entrega;
+            if (!entrega) {
+                return { error: 'Entrega não encontrada.' };
+            }
+            const ultimaEntregaCestaBasica = await this.prisma.entrega.findFirst({
+                where: {
+                    pessoId: entrega.pessoId,
+                    beneficio: {
+                        nome: 'Cesta Básica',
+                    },
+                    status: 'ativo',
+                    id: {
+                        not: entrega.id,
+                    },
+                },
+                orderBy: {
+                    datacadastro: 'desc',
+                },
+            });
+            return {
+                entrega,
+                ultimaEntregaCestaBasica,
+            };
         }
         catch (error) {
             return { error: error.message };

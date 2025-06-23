@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateEntregaDto } from './DTO/EntregaCreate';
 import { addDays, format } from 'date-fns';
@@ -135,7 +134,29 @@ export class EntregraService {
           usuario: true,
         },
       });
-      return entrega;
+      if (!entrega) {
+        return { error: 'Entrega não encontrada.' };
+      }
+      // Busca a última entrega da mesma pessoa com benefício "cesta basica"
+      const ultimaEntregaCestaBasica = await this.prisma.entrega.findFirst({
+        where: {
+          pessoId: entrega.pessoId,
+          beneficio: {
+            nome: 'Cesta Básica',
+          },
+          status: 'ativo',
+          id: {
+            not: entrega.id, // exclui a própria entrega do resultado
+          },
+        },
+        orderBy: {
+          datacadastro: 'desc',
+        },
+      });
+      return {
+        entrega,
+        ultimaEntregaCestaBasica,
+      };
     } catch (error) {
       return { error: error.message };
     }

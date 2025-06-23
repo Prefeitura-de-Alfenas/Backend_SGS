@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateEntregaDto } from './DTO/EntregaCreate';
 import { BuscaEntrega } from './DTO/BuscaEntrega';
@@ -33,7 +32,7 @@ export declare class EntregraService {
             parentesco: string;
             escolaridade: string;
             estadocivil: string;
-            renda: Prisma.Decimal;
+            renda: import("@prisma/client/runtime/library").Decimal;
             ctpsassinada: number;
             ppcl: number;
             gestante: number;
@@ -57,7 +56,7 @@ export declare class EntregraService {
             nome: string;
             descricao: string;
             categoria: string;
-            valor: Prisma.Decimal;
+            valor: import("@prisma/client/runtime/library").Decimal;
             status: import(".prisma/client").$Enums.status_code;
             createdAt: Date;
             updatedAt: Date;
@@ -90,7 +89,7 @@ export declare class EntregraService {
             parentesco: string;
             escolaridade: string;
             estadocivil: string;
-            renda: Prisma.Decimal;
+            renda: import("@prisma/client/runtime/library").Decimal;
             ctpsassinada: number;
             ppcl: number;
             gestante: number;
@@ -114,7 +113,7 @@ export declare class EntregraService {
             nome: string;
             descricao: string;
             categoria: string;
-            valor: Prisma.Decimal;
+            valor: import("@prisma/client/runtime/library").Decimal;
             status: import(".prisma/client").$Enums.status_code;
             createdAt: Date;
             updatedAt: Date;
@@ -134,90 +133,108 @@ export declare class EntregraService {
     })[] | {
         error: any;
     }>;
-    findById(id: string): Promise<({
-        equipamento: {
+    findById(id: string): Promise<{
+        entrega: {
+            equipamento: {
+                id: string;
+                nome: string;
+                responsavel: string;
+                sobre: string;
+                observacao: string;
+                cep: string;
+                logradouro: string;
+                complemento: string;
+                bairro: string;
+                localidade: string;
+                numero: string;
+                uf: string;
+                status: import(".prisma/client").$Enums.status_code;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+            usuario: {
+                id: string;
+                nome: string;
+                email: string;
+                senha: string;
+                telefone: string;
+                status: import(".prisma/client").$Enums.status_code;
+                equipamentoId: string;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+            pessoa: {
+                id: string;
+                nome: string;
+                cpf: string;
+                sexo: string;
+                telefone: string;
+                email: string;
+                datanascimento: Date;
+                rg: string;
+                parentesco: string;
+                escolaridade: string;
+                estadocivil: string;
+                renda: import("@prisma/client/runtime/library").Decimal;
+                ctpsassinada: number;
+                ppcl: number;
+                gestante: number;
+                observacao: string;
+                observacaorestrita: string;
+                cep: string;
+                logradouro: string;
+                complemento: string;
+                bairro: string;
+                localidade: string;
+                numero: string;
+                uf: string;
+                status: import(".prisma/client").$Enums.status_code;
+                equipamentoId: string;
+                pessoaId: string;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+            beneficio: {
+                id: string;
+                nome: string;
+                descricao: string;
+                categoria: string;
+                valor: import("@prisma/client/runtime/library").Decimal;
+                status: import(".prisma/client").$Enums.status_code;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+        } & {
             id: string;
-            nome: string;
-            responsavel: string;
-            sobre: string;
+            quantidade: number;
             observacao: string;
-            cep: string;
-            logradouro: string;
-            complemento: string;
-            bairro: string;
-            localidade: string;
-            numero: string;
-            uf: string;
+            datacadastro: Date;
             status: import(".prisma/client").$Enums.status_code;
-            createdAt: Date;
-            updatedAt: Date;
-        };
-        usuario: {
-            id: string;
-            nome: string;
-            email: string;
-            senha: string;
-            telefone: string;
-            status: import(".prisma/client").$Enums.status_code;
+            pessoId: string;
             equipamentoId: string;
+            beneficioId: string;
+            usuarioId: string;
             createdAt: Date;
             updatedAt: Date;
         };
-        pessoa: {
+        ultimaEntregaCestaBasica: {
             id: string;
-            nome: string;
-            cpf: string;
-            sexo: string;
-            telefone: string;
-            email: string;
-            datanascimento: Date;
-            rg: string;
-            parentesco: string;
-            escolaridade: string;
-            estadocivil: string;
-            renda: Prisma.Decimal;
-            ctpsassinada: number;
-            ppcl: number;
-            gestante: number;
+            quantidade: number;
             observacao: string;
-            observacaorestrita: string;
-            cep: string;
-            logradouro: string;
-            complemento: string;
-            bairro: string;
-            localidade: string;
-            numero: string;
-            uf: string;
+            datacadastro: Date;
             status: import(".prisma/client").$Enums.status_code;
+            pessoId: string;
             equipamentoId: string;
-            pessoaId: string;
+            beneficioId: string;
+            usuarioId: string;
             createdAt: Date;
             updatedAt: Date;
         };
-        beneficio: {
-            id: string;
-            nome: string;
-            descricao: string;
-            categoria: string;
-            valor: Prisma.Decimal;
-            status: import(".prisma/client").$Enums.status_code;
-            createdAt: Date;
-            updatedAt: Date;
-        };
-    } & {
-        id: string;
-        quantidade: number;
-        observacao: string;
-        datacadastro: Date;
-        status: import(".prisma/client").$Enums.status_code;
-        pessoId: string;
-        equipamentoId: string;
-        beneficioId: string;
-        usuarioId: string;
-        createdAt: Date;
-        updatedAt: Date;
-    }) | {
+        error?: undefined;
+    } | {
         error: any;
+        entrega?: undefined;
+        ultimaEntregaCestaBasica?: undefined;
     }>;
     findAllRelatorioPorData({ dateinicial, datefinal, pessoId, usuarioId, equipamentoId, beneficioId, statusid, }: BuscaEntrega): Promise<({
         equipamento: {
@@ -260,7 +277,7 @@ export declare class EntregraService {
             parentesco: string;
             escolaridade: string;
             estadocivil: string;
-            renda: Prisma.Decimal;
+            renda: import("@prisma/client/runtime/library").Decimal;
             ctpsassinada: number;
             ppcl: number;
             gestante: number;
@@ -284,7 +301,7 @@ export declare class EntregraService {
             nome: string;
             descricao: string;
             categoria: string;
-            valor: Prisma.Decimal;
+            valor: import("@prisma/client/runtime/library").Decimal;
             status: import(".prisma/client").$Enums.status_code;
             createdAt: Date;
             updatedAt: Date;
