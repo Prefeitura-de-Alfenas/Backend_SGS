@@ -25,6 +25,7 @@ export declare class EntregraService {
             nome: string;
             cpf: string;
             sexo: string;
+            whastapp: number;
             telefone: string;
             email: string;
             datanascimento: Date;
@@ -82,6 +83,7 @@ export declare class EntregraService {
             nome: string;
             cpf: string;
             sexo: string;
+            whastapp: number;
             telefone: string;
             email: string;
             datanascimento: Date;
@@ -168,6 +170,7 @@ export declare class EntregraService {
                 nome: string;
                 cpf: string;
                 sexo: string;
+                whastapp: number;
                 telefone: string;
                 email: string;
                 datanascimento: Date;
@@ -270,6 +273,7 @@ export declare class EntregraService {
             nome: string;
             cpf: string;
             sexo: string;
+            whastapp: number;
             telefone: string;
             email: string;
             datanascimento: Date;

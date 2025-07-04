@@ -58,6 +58,7 @@ model Pessoa {
     nome String
     cpf String @unique
     sexo String
+    whastapp Int
     telefone String?
     email String?
     datanascimento DateTime

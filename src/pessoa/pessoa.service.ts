@@ -37,6 +37,7 @@ export class PessoaService {
                   : new Date(),
                 rg: row.rg,
                 escolaridade: row.escolaridade ? row.escolaridade : '',
+                whastapp: row.whastapp == 'N�O' ? 0 : 1,
                 estadocivil: row.estadoCivil ? row.estadoCivil : 'solteiro',
                 renda: parseFloat(row.renda),
                 ctpsassinada: row.ctps_assinada == 'N�O' ? 0 : 1,
