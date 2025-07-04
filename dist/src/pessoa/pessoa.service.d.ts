@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 export declare class PessoaService {
     private prisma;
@@ -12,7 +11,16 @@ export declare class PessoaService {
         error: any;
         menssage?: undefined;
     }>;
-    create(createPessoaDto: Prisma.PessoaCreateInput): Promise<{
+    create(createPessoaDto: any): Promise<({
+        pessoaFonteRenda: {
+            pessoaId: string;
+            fonteRendaId: string;
+        }[];
+        pessoaDeficiencia: {
+            pessoaId: string;
+            deficienciaId: string;
+        }[];
+    } & {
         id: string;
         nome: string;
         cpf: string;
@@ -25,7 +33,7 @@ export declare class PessoaService {
         parentesco: string;
         escolaridade: string;
         estadocivil: string;
-        renda: Prisma.Decimal;
+        renda: import("@prisma/client/runtime/library").Decimal;
         ctpsassinada: number;
         ppcl: number;
         gestante: number;
@@ -43,10 +51,10 @@ export declare class PessoaService {
         pessoaId: string;
         createdAt: Date;
         updatedAt: Date;
-    } | {
+    }) | {
         error: any;
     }>;
-    update(id: string, updatePessoaDto: Prisma.PessoaUpdateInput): Promise<{
+    update(id: string, updatePessoaDto: any): Promise<{
         id: string;
         nome: string;
         cpf: string;
@@ -59,7 +67,7 @@ export declare class PessoaService {
         parentesco: string;
         escolaridade: string;
         estadocivil: string;
-        renda: Prisma.Decimal;
+        renda: import("@prisma/client/runtime/library").Decimal;
         ctpsassinada: number;
         ppcl: number;
         gestante: number;
@@ -93,7 +101,7 @@ export declare class PessoaService {
         parentesco: string;
         escolaridade: string;
         estadocivil: string;
-        renda: Prisma.Decimal;
+        renda: import("@prisma/client/runtime/library").Decimal;
         ctpsassinada: number;
         ppcl: number;
         gestante: number;
@@ -125,7 +133,7 @@ export declare class PessoaService {
         parentesco: string;
         escolaridade: string;
         estadocivil: string;
-        renda: Prisma.Decimal;
+        renda: import("@prisma/client/runtime/library").Decimal;
         ctpsassinada: number;
         ppcl: number;
         gestante: number;
@@ -159,7 +167,7 @@ export declare class PessoaService {
         parentesco: string;
         escolaridade: string;
         estadocivil: string;
-        renda: Prisma.Decimal;
+        renda: import("@prisma/client/runtime/library").Decimal;
         ctpsassinada: number;
         ppcl: number;
         gestante: number;
@@ -191,7 +199,7 @@ export declare class PessoaService {
         parentesco: string;
         escolaridade: string;
         estadocivil: string;
-        renda: Prisma.Decimal;
+        renda: import("@prisma/client/runtime/library").Decimal;
         ctpsassinada: number;
         ppcl: number;
         gestante: number;
@@ -225,7 +233,7 @@ export declare class PessoaService {
         parentesco: string;
         escolaridade: string;
         estadocivil: string;
-        renda: Prisma.Decimal;
+        renda: import("@prisma/client/runtime/library").Decimal;
         ctpsassinada: number;
         ppcl: number;
         gestante: number;

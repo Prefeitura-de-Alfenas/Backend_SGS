@@ -61,23 +61,37 @@ export declare class EquipamentoService {
         error: any;
     }>;
     findAllNoFilter(): Promise<{
-        id: string;
-        nome: string;
-        responsavel: string;
-        sobre: string;
-        observacao: string;
-        cep: string;
-        logradouro: string;
-        complemento: string;
-        bairro: string;
-        localidade: string;
-        numero: string;
-        uf: string;
-        status: import(".prisma/client").$Enums.status_code;
-        createdAt: Date;
-        updatedAt: Date;
-    }[] | {
+        equipamentos: {
+            id: string;
+            nome: string;
+            responsavel: string;
+            sobre: string;
+            observacao: string;
+            cep: string;
+            logradouro: string;
+            complemento: string;
+            bairro: string;
+            localidade: string;
+            numero: string;
+            uf: string;
+            status: import(".prisma/client").$Enums.status_code;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
+        fonteDeRendas: {
+            id: string;
+            nome: string;
+        }[];
+        deficiencias: {
+            id: string;
+            nome: string;
+        }[];
+        error?: undefined;
+    } | {
         error: any;
+        equipamentos?: undefined;
+        fonteDeRendas?: undefined;
+        deficiencias?: undefined;
     }>;
     findById(id: string): Promise<{
         id: string;

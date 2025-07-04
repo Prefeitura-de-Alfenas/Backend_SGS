@@ -68,7 +68,16 @@ export declare class PessoaController {
         createdAt: Date;
         updatedAt: Date;
     }[]>;
-    create(createPessoaDto: Prisma.PessoaCreateInput): Promise<{
+    create(createPessoaDto: Prisma.PessoaCreateInput): Promise<({
+        pessoaFonteRenda: {
+            pessoaId: string;
+            fonteRendaId: string;
+        }[];
+        pessoaDeficiencia: {
+            pessoaId: string;
+            deficienciaId: string;
+        }[];
+    } & {
         id: string;
         nome: string;
         cpf: string;
@@ -99,7 +108,7 @@ export declare class PessoaController {
         pessoaId: string;
         createdAt: Date;
         updatedAt: Date;
-    } | {
+    }) | {
         error: any;
     }>;
     findbyid(id: string): Promise<any>;

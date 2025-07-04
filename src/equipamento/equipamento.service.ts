@@ -64,8 +64,22 @@ export class EquipamentoService {
           nome: 'asc',
         },
       });
+      const fonteDeRendas = await this.prisma.fonteRenda.findMany({
+        orderBy: {
+          nome: 'asc',
+        },
+      });
+      const deficiencias = await this.prisma.deficiencia.findMany({
+        orderBy: {
+          nome: 'asc',
+        },
+      });
 
-      return equipamentos;
+      return {
+        equipamentos,
+        fonteDeRendas,
+        deficiencias,
+      };
     } catch (error) {
       return { error: error.message };
     }

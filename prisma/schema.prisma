@@ -88,12 +88,14 @@ model Pessoa {
     pessoaId String?
 
    familiares Pessoa[] @relation("Responsavel")
-
+ 
    entregas Entrega[]
 
    docs Arquivo[]
 
    beneficios PessoasOnBeneficios[]
+   pessoaDeficiencia PessoaDeficiencia[]
+   pessoaFonteRenda PessoaFonteRenda[]
 
    createdAt     DateTime  @default(now())
    updatedAt     DateTime? @updatedAt
@@ -101,6 +103,35 @@ model Pessoa {
     @@map("pessoa")
 }
 
+model FonteRenda {
+  id     String   @id @default(uuid())
+  nome   String   @unique
+  pessoas PessoaFonteRenda[]
+}
+
+model PessoaFonteRenda {
+  pessoaId     String
+  fonteRendaId String
+
+  pessoa       Pessoa      @relation(fields: [pessoaId], references: [id])
+  fonteRenda   FonteRenda  @relation(fields: [fonteRendaId], references: [id])
+
+  @@id([pessoaId, fonteRendaId])
+}
+model PessoaDeficiencia {
+  pessoaId     String
+  deficienciaId String
+
+  pessoa       Pessoa      @relation(fields: [pessoaId], references: [id])
+  deficiencia  Deficiencia @relation(fields: [deficienciaId], references: [id])
+
+  @@id([pessoaId, deficienciaId])
+}
+model Deficiencia {
+  id     String   @id @default(uuid())
+  nome   String   @unique // Ex: "Física", "Auditiva", etc
+  pessoas PessoaDeficiencia[]
+}
 model Arquivo{
     id String @id @default(uuid())
     nome String 

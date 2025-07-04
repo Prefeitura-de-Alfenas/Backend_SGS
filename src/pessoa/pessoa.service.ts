@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as fs from 'fs'; // Use importação correta para fs
 import * as csv from 'csv-parser'; // Use importação correta para csv-parser
@@ -145,29 +144,88 @@ export class PessoaService {
     }
   }
 
-  async create(createPessoaDto: Prisma.PessoaCreateInput) {
+  async create(createPessoaDto: any) {
     try {
+      // Extrai os arrays de IDs das relações M:N
+      const { pessoaDeficiencia, pessoaFonteRenda, ...dadosPessoa } =
+        createPessoaDto;
+
       const pessoa = await this.prisma.pessoa.create({
-        data: createPessoaDto,
-      });
+        data: {
+          ...dadosPessoa,
 
-      return pessoa;
-    } catch (error) {
-      if (error.message.includes('pessoa_cpf_key')) {
-        return { error: 'CPF já existe na base de dados' };
-      }
-      return { error: error.message };
-    }
-  }
+          // Cria os relacionamentos com deficiência
+          pessoaDeficiencia: {
+            create:
+              pessoaDeficiencia?.map((deficienciaId: string) => ({
+                deficiencia: { connect: { id: deficienciaId } },
+              })) || [],
+          },
 
-  async update(id: string, updatePessoaDto: Prisma.PessoaUpdateInput) {
-    try {
-      const pessoa = await this.prisma.pessoa.update({
-        where: {
-          id,
+          // Cria os relacionamentos com fonte de renda
+          pessoaFonteRenda: {
+            create:
+              pessoaFonteRenda?.map((fonteRendaId: string) => ({
+                fonteRenda: { connect: { id: fonteRendaId } },
+              })) || [],
+          },
         },
-        data: updatePessoaDto,
+        include: {
+          pessoaDeficiencia: true,
+          pessoaFonteRenda: true,
+        },
       });
+
+      return pessoa;
+    } catch (error) {
+      if (error.message.includes('pessoa_cpf_key')) {
+        return { error: 'CPF já existe na base de dados' };
+      }
+
+      return { error: error.message };
+    }
+  }
+
+  async update(id: string, updatePessoaDto: any) {
+    try {
+      // Extrai os relacionamentos do DTO
+      const { pessoaDeficiencia, pessoaFonteRenda, ...dadosPessoa } =
+        updatePessoaDto;
+
+      // 1. Atualiza os dados principais da Pessoa
+      const pessoa = await this.prisma.pessoa.update({
+        where: { id },
+        data: {
+          ...dadosPessoa,
+        },
+      });
+
+      // 2. Remove os relacionamentos antigos
+      await this.prisma.pessoaDeficiencia.deleteMany({
+        where: { pessoaId: id },
+      });
+      await this.prisma.pessoaFonteRenda.deleteMany({
+        where: { pessoaId: id },
+      });
+
+      // 3. Cria os novos relacionamentos (se houver)
+      if (Array.isArray(pessoaDeficiencia) && pessoaDeficiencia.length > 0) {
+        await this.prisma.pessoaDeficiencia.createMany({
+          data: pessoaDeficiencia.map((deficienciaId: string) => ({
+            pessoaId: id,
+            deficienciaId,
+          })),
+        });
+      }
+
+      if (Array.isArray(pessoaFonteRenda) && pessoaFonteRenda.length > 0) {
+        await this.prisma.pessoaFonteRenda.createMany({
+          data: pessoaFonteRenda.map((fonteRendaId: string) => ({
+            pessoaId: id,
+            fonteRendaId,
+          })),
+        });
+      }
 
       return pessoa;
     } catch (error) {
@@ -177,6 +235,7 @@ export class PessoaService {
       return { error: error.message };
     }
   }
+
   async findAll(take: string, skip: string, filter: string) {
     const takeNumber = parseInt(take);
     const skipNumber = parseInt(skip);
@@ -240,6 +299,8 @@ export class PessoaService {
         include: {
           equipamento: true,
           beneficios: true,
+          pessoaDeficiencia: true,
+          pessoaFonteRenda: true,
         },
       });
       if (!pessoa) {

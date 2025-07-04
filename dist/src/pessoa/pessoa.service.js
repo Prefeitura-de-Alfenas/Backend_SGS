@@ -144,8 +144,25 @@ let PessoaService = class PessoaService {
     }
     async create(createPessoaDto) {
         try {
+            const { pessoaDeficiencia, pessoaFonteRenda, ...dadosPessoa } = createPessoaDto;
             const pessoa = await this.prisma.pessoa.create({
-                data: createPessoaDto,
+                data: {
+                    ...dadosPessoa,
+                    pessoaDeficiencia: {
+                        create: pessoaDeficiencia?.map((deficienciaId) => ({
+                            deficiencia: { connect: { id: deficienciaId } },
+                        })) || [],
+                    },
+                    pessoaFonteRenda: {
+                        create: pessoaFonteRenda?.map((fonteRendaId) => ({
+                            fonteRenda: { connect: { id: fonteRendaId } },
+                        })) || [],
+                    },
+                },
+                include: {
+                    pessoaDeficiencia: true,
+                    pessoaFonteRenda: true,
+                },
             });
             return pessoa;
         }
@@ -158,12 +175,35 @@ let PessoaService = class PessoaService {
     }
     async update(id, updatePessoaDto) {
         try {
+            const { pessoaDeficiencia, pessoaFonteRenda, ...dadosPessoa } = updatePessoaDto;
             const pessoa = await this.prisma.pessoa.update({
-                where: {
-                    id,
+                where: { id },
+                data: {
+                    ...dadosPessoa,
                 },
-                data: updatePessoaDto,
             });
+            await this.prisma.pessoaDeficiencia.deleteMany({
+                where: { pessoaId: id },
+            });
+            await this.prisma.pessoaFonteRenda.deleteMany({
+                where: { pessoaId: id },
+            });
+            if (Array.isArray(pessoaDeficiencia) && pessoaDeficiencia.length > 0) {
+                await this.prisma.pessoaDeficiencia.createMany({
+                    data: pessoaDeficiencia.map((deficienciaId) => ({
+                        pessoaId: id,
+                        deficienciaId,
+                    })),
+                });
+            }
+            if (Array.isArray(pessoaFonteRenda) && pessoaFonteRenda.length > 0) {
+                await this.prisma.pessoaFonteRenda.createMany({
+                    data: pessoaFonteRenda.map((fonteRendaId) => ({
+                        pessoaId: id,
+                        fonteRendaId,
+                    })),
+                });
+            }
             return pessoa;
         }
         catch (error) {
@@ -223,6 +263,8 @@ let PessoaService = class PessoaService {
                 include: {
                     equipamento: true,
                     beneficios: true,
+                    pessoaDeficiencia: true,
+                    pessoaFonteRenda: true,
                 },
             });
             if (!pessoa) {
