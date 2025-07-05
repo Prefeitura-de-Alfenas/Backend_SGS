@@ -314,7 +314,27 @@ let PessoaService = class PessoaService {
             if (!pessoa) {
                 return { error: 'Pessoa não existe no sistema' };
             }
-            return pessoa;
+            const normalizar = (valor) => valor.replace(/\D/g, '');
+            const cepSemMascara = normalizar(pessoa.cep);
+            const numeroSemMascara = normalizar(pessoa.numero);
+            const pessoasSemFiltro = await this.prisma.pessoa.findMany({
+                where: {
+                    pessoaId: null,
+                },
+            });
+            const enderecos = pessoasSemFiltro.filter((pessoaFilter) => {
+                const cepBase = normalizar(pessoaFilter.cep);
+                const numeroBase = normalizar(pessoaFilter.numero);
+                return (cepBase === cepSemMascara &&
+                    numeroBase === numeroSemMascara &&
+                    pessoaFilter.id !== pessoa.id);
+            });
+            return {
+                dados: {
+                    pessoa,
+                    enderecos,
+                },
+            };
         }
         catch (error) {
             return error.message;
