@@ -19,6 +19,7 @@ const client_1 = require("@prisma/client");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const roles_guard_1 = require("../auth/guards/roles.guard");
 const roles_decorator_1 = require("../auth/decorators/roles.decorator");
+const pessoadto_1 = require("./dto/pessoadto");
 let PessoaController = class PessoaController {
     constructor(pessoaService) {
         this.pessoaService = pessoaService;
@@ -26,6 +27,13 @@ let PessoaController = class PessoaController {
     async backup() {
         await this.pessoaService.importDataFromCsv();
         return 'Data imported successfully';
+    }
+    async enderecoRepetido(cep, numero) {
+        return this.pessoaService.buscaEnderecoRepetido(cep, numero);
+    }
+    async moverPessoaParaOutroResponsavel(body) {
+        console.log('body', body);
+        return this.pessoaService.moverPessoaParaOutroResponsavel(body);
     }
     async findall(take, skip, filter) {
         return this.pessoaService.findAll(take, skip, filter);
@@ -60,6 +68,9 @@ let PessoaController = class PessoaController {
     async findallInativePessoas(take, skip, filter) {
         return this.pessoaService.findAllInativePessoas(take, skip, filter);
     }
+    async buscarPessoaPorCpf(cpf) {
+        return this.pessoaService.buscarPessoaPorCpf(cpf);
+    }
 };
 exports.PessoaController = PessoaController;
 __decorate([
@@ -68,6 +79,21 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PessoaController.prototype, "backup", null);
+__decorate([
+    (0, common_1.Get)('/endereco-repetido'),
+    __param(0, (0, common_1.Query)('cep')),
+    __param(1, (0, common_1.Query)('numero')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], PessoaController.prototype, "enderecoRepetido", null);
+__decorate([
+    (0, common_1.Patch)('mover-para-responsavel'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [pessoadto_1.MoverPessoaDto]),
+    __metadata("design:returntype", Promise)
+], PessoaController.prototype, "moverPessoaParaOutroResponsavel", null);
 __decorate([
     (0, common_1.Get)(':take/skip/:skip/:filter?'),
     __param(0, (0, common_1.Param)('take')),
@@ -156,6 +182,13 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], PessoaController.prototype, "findallInativePessoas", null);
+__decorate([
+    (0, common_1.Get)('buscar-por-cpf/:cpf'),
+    __param(0, (0, common_1.Param)('cpf')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PessoaController.prototype, "buscarPessoaPorCpf", null);
 exports.PessoaController = PessoaController = __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, common_1.Controller)('pessoa'),

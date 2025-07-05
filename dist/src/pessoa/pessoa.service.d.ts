@@ -1,4 +1,5 @@
 import { PrismaService } from 'src/prisma/prisma.service';
+import { MoverPessoaDto } from './dto/pessoadto';
 export declare class PessoaService {
     private prisma;
     constructor(prisma: PrismaService);
@@ -221,6 +222,85 @@ export declare class PessoaService {
         error: string;
     }>;
     findAllInativePessoas(take: string, skip: string, filter: string): Promise<{
+        id: string;
+        nome: string;
+        cpf: string;
+        sexo: string;
+        whastapp: number;
+        telefone: string;
+        email: string;
+        datanascimento: Date;
+        rg: string;
+        parentesco: string;
+        escolaridade: string;
+        estadocivil: string;
+        renda: import("@prisma/client/runtime/library").Decimal;
+        ctpsassinada: number;
+        ppcl: number;
+        gestante: number;
+        observacao: string;
+        observacaorestrita: string;
+        cep: string;
+        logradouro: string;
+        complemento: string;
+        bairro: string;
+        localidade: string;
+        numero: string;
+        uf: string;
+        status: import(".prisma/client").$Enums.status_code;
+        equipamentoId: string;
+        pessoaId: string;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
+    moverPessoaParaOutroResponsavel(data: MoverPessoaDto): Promise<{
+        error: string;
+        message?: undefined;
+        pessoaAtualizada?: undefined;
+    } | {
+        message: string;
+        pessoaAtualizada: {
+            id: string;
+            nome: string;
+            cpf: string;
+            sexo: string;
+            whastapp: number;
+            telefone: string;
+            email: string;
+            datanascimento: Date;
+            rg: string;
+            parentesco: string;
+            escolaridade: string;
+            estadocivil: string;
+            renda: import("@prisma/client/runtime/library").Decimal;
+            ctpsassinada: number;
+            ppcl: number;
+            gestante: number;
+            observacao: string;
+            observacaorestrita: string;
+            cep: string;
+            logradouro: string;
+            complemento: string;
+            bairro: string;
+            localidade: string;
+            numero: string;
+            uf: string;
+            status: import(".prisma/client").$Enums.status_code;
+            equipamentoId: string;
+            pessoaId: string;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+        error?: undefined;
+    }>;
+    buscarPessoaPorCpf(cpf: string): Promise<{
+        id: string;
+        nome: string;
+        pessoaId: string;
+    } | {
+        error: string;
+    }>;
+    buscaEnderecoRepetido(cep: string, numero: string): Promise<{
         id: string;
         nome: string;
         cpf: string;

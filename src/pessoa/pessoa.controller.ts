@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { PessoaService } from './pessoa.service';
@@ -12,6 +13,7 @@ import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { MoverPessoaDto } from './dto/pessoadto';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('pessoa')
 export class PessoaController {
@@ -20,6 +22,19 @@ export class PessoaController {
   async backup() {
     await this.pessoaService.importDataFromCsv();
     return 'Data imported successfully';
+  }
+  @Get('/endereco-repetido')
+  async enderecoRepetido(
+    @Query('cep') cep: string,
+    @Query('numero') numero: string,
+  ) {
+    return this.pessoaService.buscaEnderecoRepetido(cep, numero);
+  }
+
+  @Patch('mover-para-responsavel')
+  async moverPessoaParaOutroResponsavel(@Body() body: MoverPessoaDto) {
+    console.log('body', body);
+    return this.pessoaService.moverPessoaParaOutroResponsavel(body);
   }
 
   @Get(':take/skip/:skip/:filter?')
@@ -99,5 +114,10 @@ export class PessoaController {
     @Param('filter') filter?: string,
   ) {
     return this.pessoaService.findAllInativePessoas(take, skip, filter);
+  }
+
+  @Get('buscar-por-cpf/:cpf')
+  async buscarPessoaPorCpf(@Param('cpf') cpf: string) {
+    return this.pessoaService.buscarPessoaPorCpf(cpf);
   }
 }

@@ -1,9 +1,82 @@
 import { PessoaService } from './pessoa.service';
 import { Prisma } from '@prisma/client';
+import { MoverPessoaDto } from './dto/pessoadto';
 export declare class PessoaController {
     private readonly pessoaService;
     constructor(pessoaService: PessoaService);
     backup(): Promise<string>;
+    enderecoRepetido(cep: string, numero: string): Promise<{
+        id: string;
+        nome: string;
+        cpf: string;
+        sexo: string;
+        whastapp: number;
+        telefone: string;
+        email: string;
+        datanascimento: Date;
+        rg: string;
+        parentesco: string;
+        escolaridade: string;
+        estadocivil: string;
+        renda: Prisma.Decimal;
+        ctpsassinada: number;
+        ppcl: number;
+        gestante: number;
+        observacao: string;
+        observacaorestrita: string;
+        cep: string;
+        logradouro: string;
+        complemento: string;
+        bairro: string;
+        localidade: string;
+        numero: string;
+        uf: string;
+        status: import(".prisma/client").$Enums.status_code;
+        equipamentoId: string;
+        pessoaId: string;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
+    moverPessoaParaOutroResponsavel(body: MoverPessoaDto): Promise<{
+        error: string;
+        message?: undefined;
+        pessoaAtualizada?: undefined;
+    } | {
+        message: string;
+        pessoaAtualizada: {
+            id: string;
+            nome: string;
+            cpf: string;
+            sexo: string;
+            whastapp: number;
+            telefone: string;
+            email: string;
+            datanascimento: Date;
+            rg: string;
+            parentesco: string;
+            escolaridade: string;
+            estadocivil: string;
+            renda: Prisma.Decimal;
+            ctpsassinada: number;
+            ppcl: number;
+            gestante: number;
+            observacao: string;
+            observacaorestrita: string;
+            cep: string;
+            logradouro: string;
+            complemento: string;
+            bairro: string;
+            localidade: string;
+            numero: string;
+            uf: string;
+            status: import(".prisma/client").$Enums.status_code;
+            equipamentoId: string;
+            pessoaId: string;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+        error?: undefined;
+    }>;
     findall(take: string, skip: string, filter?: string): Promise<{
         id: string;
         nome: string;
@@ -253,4 +326,11 @@ export declare class PessoaController {
         createdAt: Date;
         updatedAt: Date;
     }[]>;
+    buscarPessoaPorCpf(cpf: string): Promise<{
+        id: string;
+        nome: string;
+        pessoaId: string;
+    } | {
+        error: string;
+    }>;
 }

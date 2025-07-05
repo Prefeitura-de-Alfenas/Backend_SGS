@@ -4,6 +4,7 @@ import * as fs from 'fs'; // Use importação correta para fs
 import * as csv from 'csv-parser'; // Use importação correta para csv-parser
 import * as path from 'path';
 import { addDays, format, parse } from 'date-fns'; // Importe a função parse do date-fns
+import { MoverPessoaDto } from './dto/pessoadto';
 @Injectable()
 export class PessoaService {
   constructor(private prisma: PrismaService) {}
@@ -149,10 +150,11 @@ export class PessoaService {
       // Extrai os arrays de IDs das relações M:N
       const { pessoaDeficiencia, pessoaFonteRenda, ...dadosPessoa } =
         createPessoaDto;
-
+      const { nome, ...resto } = dadosPessoa;
       const pessoa = await this.prisma.pessoa.create({
         data: {
-          ...dadosPessoa,
+          nome: nome.toUpperCase(),
+          ...resto,
 
           // Cria os relacionamentos com deficiência
           pessoaDeficiencia: {
@@ -191,12 +193,13 @@ export class PessoaService {
       // Extrai os relacionamentos do DTO
       const { pessoaDeficiencia, pessoaFonteRenda, ...dadosPessoa } =
         updatePessoaDto;
-
+      const { nome, ...resto } = dadosPessoa;
       // 1. Atualiza os dados principais da Pessoa
       const pessoa = await this.prisma.pessoa.update({
         where: { id },
         data: {
-          ...dadosPessoa,
+          nome: nome.toUpperCase(),
+          ...resto,
         },
       });
 
@@ -379,23 +382,41 @@ export class PessoaService {
   }
 
   async changeStatus(id: string) {
-    const pessoa = await this.prisma.pessoa.findUnique({
-      where: { id },
-    });
-    if (!pessoa) {
-      return { error: 'Pessoa não existe' };
-    }
+    return await this.prisma.$transaction(async (tx) => {
+      // Busca a pessoa com os relacionamentos necessários
+      const pessoa = await tx.pessoa.findUnique({
+        where: { id },
+        include: {
+          responsavel: true,
+          familiares: true,
+        },
+      });
 
-    const changeStatusPessoa = await this.prisma.pessoa.update({
-      where: {
-        id,
-        pessoaId: null,
-      },
-      data: {
-        status: pessoa.status == 'ativo' ? 'inativo' : 'ativo',
-      },
+      // Valida se a pessoa existe
+      if (!pessoa) {
+        return {
+          error: 'Pessoa não existe',
+        };
+      }
+
+      // Valida se é responsável com familiares — não pode alterar
+      if (pessoa.pessoaId === null && pessoa.familiares.length > 0) {
+        return {
+          error: 'Pessoa que tem familiares e não pode ter o status alterado',
+        };
+      }
+
+      // Atualiza o status (ativo <-> inativo)
+      const updated = await tx.pessoa.update({
+        where: { id },
+        data: {
+          status: pessoa.status === 'ativo' ? 'inativo' : 'ativo',
+          pessoaId: null,
+        },
+      });
+
+      return updated;
     });
-    return changeStatusPessoa;
   }
 
   async findAllInativePessoas(take: string, skip: string, filter: string) {
@@ -417,6 +438,131 @@ export class PessoaService {
       take: takeNumber,
       skip: page,
     });
+    return pessoas;
+  }
+
+  async moverPessoaParaOutroResponsavel(data: MoverPessoaDto) {
+    try {
+      const { pessoaId, novoResponsavelId } = data;
+      return await this.prisma.$transaction(async (tx) => {
+        if (pessoaId === novoResponsavelId) {
+          return {
+            error: 'A pessoa e o Responsavel não pode ser o mesmo',
+          };
+        }
+        // Buscar a pessoa a ser movida
+        const pessoa = await tx.pessoa.findUnique({
+          where: { id: pessoaId },
+          include: {
+            familiares: true,
+          },
+        });
+
+        if (!pessoa) {
+          return {
+            error: 'Pessoa não encontrada',
+          };
+        }
+
+        if (pessoa.familiares.length > 0) {
+          return {
+            error:
+              'Pessoa não pode ser movida pois é responsável com familiares',
+          };
+        }
+
+        // Buscar o novo responsável com os campos de endereço
+        const novoResponsavel = await tx.pessoa.findUnique({
+          where: { id: novoResponsavelId },
+          select: {
+            pessoaId: true,
+            cep: true,
+            logradouro: true,
+            complemento: true,
+            bairro: true,
+            localidade: true,
+            numero: true,
+            uf: true,
+          },
+        });
+
+        if (!novoResponsavel) {
+          return {
+            error: 'Novo responsável não encontrado',
+          };
+        }
+
+        if (novoResponsavel.pessoaId !== null) {
+          return {
+            error: 'Novo responsável não é um responsável principal',
+          };
+        }
+
+        // Atualizar a pessoa com novo responsável + endereço do responsável
+        const pessoaAtualizada = await tx.pessoa.update({
+          where: { id: pessoaId },
+          data: {
+            pessoaId: novoResponsavelId,
+            cep: novoResponsavel.cep,
+            logradouro: novoResponsavel.logradouro,
+            complemento: novoResponsavel.complemento,
+            bairro: novoResponsavel.bairro,
+            localidade: novoResponsavel.localidade,
+            numero: novoResponsavel.numero,
+            uf: novoResponsavel.uf,
+          },
+        });
+
+        return {
+          message: 'Pessoa movida com sucesso e endereço atualizado',
+          pessoaAtualizada,
+        };
+      });
+    } catch (error) {
+      // Aqui captura qualquer erro inesperado, inclusive do Prisma
+      console.log('error', error);
+      return {
+        error: `Erro ao mover pessoa: ${error.message || 'erro desconhecido'}`,
+      };
+    }
+  }
+
+  async buscarPessoaPorCpf(cpf: string) {
+    const pessoa = await this.prisma.pessoa.findUnique({
+      where: { cpf },
+      select: {
+        id: true,
+        nome: true,
+        pessoaId: true,
+      },
+    });
+
+    if (!pessoa) {
+      return { error: 'Pessoa não existe' };
+    }
+
+    return pessoa;
+  }
+
+  async buscaEnderecoRepetido(cep: string, numero: string) {
+    const normalizar = (valor: string) => valor.replace(/\D/g, '');
+
+    const cepSemMascara = normalizar(cep);
+    const numeroSemMascara = normalizar(numero);
+
+    const pessoasSemFiltro = await this.prisma.pessoa.findMany({
+      where: {
+        pessoaId: null, // somente responsáveis
+      },
+    });
+
+    // filtrar em memória os que têm cep e número normalizados iguais
+    const pessoas = pessoasSemFiltro.filter((pessoa) => {
+      const cepBase = normalizar(pessoa.cep);
+      const numeroBase = normalizar(pessoa.numero);
+      return cepBase === cepSemMascara && numeroBase === numeroSemMascara;
+    });
+
     return pessoas;
   }
 }

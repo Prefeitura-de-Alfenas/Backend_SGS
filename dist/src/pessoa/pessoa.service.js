@@ -145,9 +145,11 @@ let PessoaService = class PessoaService {
     async create(createPessoaDto) {
         try {
             const { pessoaDeficiencia, pessoaFonteRenda, ...dadosPessoa } = createPessoaDto;
+            const { nome, ...resto } = dadosPessoa;
             const pessoa = await this.prisma.pessoa.create({
                 data: {
-                    ...dadosPessoa,
+                    nome: nome.toUpperCase(),
+                    ...resto,
                     pessoaDeficiencia: {
                         create: pessoaDeficiencia?.map((deficienciaId) => ({
                             deficiencia: { connect: { id: deficienciaId } },
@@ -176,10 +178,12 @@ let PessoaService = class PessoaService {
     async update(id, updatePessoaDto) {
         try {
             const { pessoaDeficiencia, pessoaFonteRenda, ...dadosPessoa } = updatePessoaDto;
+            const { nome, ...resto } = dadosPessoa;
             const pessoa = await this.prisma.pessoa.update({
                 where: { id },
                 data: {
-                    ...dadosPessoa,
+                    nome: nome.toUpperCase(),
+                    ...resto,
                 },
             });
             await this.prisma.pessoaDeficiencia.deleteMany({
@@ -337,22 +341,33 @@ let PessoaService = class PessoaService {
         return familiares;
     }
     async changeStatus(id) {
-        const pessoa = await this.prisma.pessoa.findUnique({
-            where: { id },
+        return await this.prisma.$transaction(async (tx) => {
+            const pessoa = await tx.pessoa.findUnique({
+                where: { id },
+                include: {
+                    responsavel: true,
+                    familiares: true,
+                },
+            });
+            if (!pessoa) {
+                return {
+                    error: 'Pessoa não existe',
+                };
+            }
+            if (pessoa.pessoaId === null && pessoa.familiares.length > 0) {
+                return {
+                    error: 'Pessoa que tem familiares e não pode ter o status alterado',
+                };
+            }
+            const updated = await tx.pessoa.update({
+                where: { id },
+                data: {
+                    status: pessoa.status === 'ativo' ? 'inativo' : 'ativo',
+                    pessoaId: null,
+                },
+            });
+            return updated;
         });
-        if (!pessoa) {
-            return { error: 'Pessoa não existe' };
-        }
-        const changeStatusPessoa = await this.prisma.pessoa.update({
-            where: {
-                id,
-                pessoaId: null,
-            },
-            data: {
-                status: pessoa.status == 'ativo' ? 'inativo' : 'ativo',
-            },
-        });
-        return changeStatusPessoa;
     }
     async findAllInativePessoas(take, skip, filter) {
         const takeNumber = parseInt(take);
@@ -371,6 +386,110 @@ let PessoaService = class PessoaService {
             },
             take: takeNumber,
             skip: page,
+        });
+        return pessoas;
+    }
+    async moverPessoaParaOutroResponsavel(data) {
+        try {
+            const { pessoaId, novoResponsavelId } = data;
+            return await this.prisma.$transaction(async (tx) => {
+                if (pessoaId === novoResponsavelId) {
+                    return {
+                        error: 'A pessoa e o Responsavel não pode ser o mesmo',
+                    };
+                }
+                const pessoa = await tx.pessoa.findUnique({
+                    where: { id: pessoaId },
+                    include: {
+                        familiares: true,
+                    },
+                });
+                if (!pessoa) {
+                    return {
+                        error: 'Pessoa não encontrada',
+                    };
+                }
+                if (pessoa.familiares.length > 0) {
+                    return {
+                        error: 'Pessoa não pode ser movida pois é responsável com familiares',
+                    };
+                }
+                const novoResponsavel = await tx.pessoa.findUnique({
+                    where: { id: novoResponsavelId },
+                    select: {
+                        pessoaId: true,
+                        cep: true,
+                        logradouro: true,
+                        complemento: true,
+                        bairro: true,
+                        localidade: true,
+                        numero: true,
+                        uf: true,
+                    },
+                });
+                if (!novoResponsavel) {
+                    return {
+                        error: 'Novo responsável não encontrado',
+                    };
+                }
+                if (novoResponsavel.pessoaId !== null) {
+                    return {
+                        error: 'Novo responsável não é um responsável principal',
+                    };
+                }
+                const pessoaAtualizada = await tx.pessoa.update({
+                    where: { id: pessoaId },
+                    data: {
+                        pessoaId: novoResponsavelId,
+                        cep: novoResponsavel.cep,
+                        logradouro: novoResponsavel.logradouro,
+                        complemento: novoResponsavel.complemento,
+                        bairro: novoResponsavel.bairro,
+                        localidade: novoResponsavel.localidade,
+                        numero: novoResponsavel.numero,
+                        uf: novoResponsavel.uf,
+                    },
+                });
+                return {
+                    message: 'Pessoa movida com sucesso e endereço atualizado',
+                    pessoaAtualizada,
+                };
+            });
+        }
+        catch (error) {
+            console.log('error', error);
+            return {
+                error: `Erro ao mover pessoa: ${error.message || 'erro desconhecido'}`,
+            };
+        }
+    }
+    async buscarPessoaPorCpf(cpf) {
+        const pessoa = await this.prisma.pessoa.findUnique({
+            where: { cpf },
+            select: {
+                id: true,
+                nome: true,
+                pessoaId: true,
+            },
+        });
+        if (!pessoa) {
+            return { error: 'Pessoa não existe' };
+        }
+        return pessoa;
+    }
+    async buscaEnderecoRepetido(cep, numero) {
+        const normalizar = (valor) => valor.replace(/\D/g, '');
+        const cepSemMascara = normalizar(cep);
+        const numeroSemMascara = normalizar(numero);
+        const pessoasSemFiltro = await this.prisma.pessoa.findMany({
+            where: {
+                pessoaId: null,
+            },
+        });
+        const pessoas = pessoasSemFiltro.filter((pessoa) => {
+            const cepBase = normalizar(pessoa.cep);
+            const numeroBase = normalizar(pessoa.numero);
+            return cepBase === cepSemMascara && numeroBase === numeroSemMascara;
         });
         return pessoas;
     }
