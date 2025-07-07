@@ -1,6 +1,6 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateEntregaDto } from './DTO/EntregaCreate';
-import { BuscaEntrega } from './DTO/BuscaEntrega';
+import { BuscaEntrega, DefIndef } from './DTO/BuscaEntrega';
 export declare class EntregraService {
     private prisma;
     constructor(prisma: PrismaService);
@@ -9,6 +9,8 @@ export declare class EntregraService {
         quantidade: number;
         observacao: string;
         datacadastro: Date;
+        motivo: string;
+        nivel: string;
         status: import(".prisma/client").$Enums.status_code;
         pessoId: string;
         equipamentoId: string;
@@ -19,7 +21,7 @@ export declare class EntregraService {
     } | {
         error: any;
     }>;
-    findAllForPessoas(id: string, take: string, skip: string, filter: string): Promise<({
+    findAllForPessoas(id: string, take: string, skip: string): Promise<({
         pessoa: {
             id: string;
             nome: string;
@@ -39,6 +41,7 @@ export declare class EntregraService {
             gestante: number;
             observacao: string;
             observacaorestrita: string;
+            motivoexclusao: string;
             cep: string;
             logradouro: string;
             complemento: string;
@@ -49,6 +52,7 @@ export declare class EntregraService {
             status: import(".prisma/client").$Enums.status_code;
             equipamentoId: string;
             pessoaId: string;
+            usuarioId: string;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -67,6 +71,8 @@ export declare class EntregraService {
         quantidade: number;
         observacao: string;
         datacadastro: Date;
+        motivo: string;
+        nivel: string;
         status: import(".prisma/client").$Enums.status_code;
         pessoId: string;
         equipamentoId: string;
@@ -77,7 +83,7 @@ export declare class EntregraService {
     })[] | {
         error: any;
     }>;
-    findAll(take: string, skip: string, filter: string): Promise<({
+    findAll(take: string, skip: string): Promise<({
         pessoa: {
             id: string;
             nome: string;
@@ -97,6 +103,7 @@ export declare class EntregraService {
             gestante: number;
             observacao: string;
             observacaorestrita: string;
+            motivoexclusao: string;
             cep: string;
             logradouro: string;
             complemento: string;
@@ -107,6 +114,7 @@ export declare class EntregraService {
             status: import(".prisma/client").$Enums.status_code;
             equipamentoId: string;
             pessoaId: string;
+            usuarioId: string;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -125,6 +133,8 @@ export declare class EntregraService {
         quantidade: number;
         observacao: string;
         datacadastro: Date;
+        motivo: string;
+        nivel: string;
         status: import(".prisma/client").$Enums.status_code;
         pessoId: string;
         equipamentoId: string;
@@ -184,6 +194,7 @@ export declare class EntregraService {
                 gestante: number;
                 observacao: string;
                 observacaorestrita: string;
+                motivoexclusao: string;
                 cep: string;
                 logradouro: string;
                 complemento: string;
@@ -194,6 +205,7 @@ export declare class EntregraService {
                 status: import(".prisma/client").$Enums.status_code;
                 equipamentoId: string;
                 pessoaId: string;
+                usuarioId: string;
                 createdAt: Date;
                 updatedAt: Date;
             };
@@ -212,6 +224,8 @@ export declare class EntregraService {
             quantidade: number;
             observacao: string;
             datacadastro: Date;
+            motivo: string;
+            nivel: string;
             status: import(".prisma/client").$Enums.status_code;
             pessoId: string;
             equipamentoId: string;
@@ -225,6 +239,8 @@ export declare class EntregraService {
             quantidade: number;
             observacao: string;
             datacadastro: Date;
+            motivo: string;
+            nivel: string;
             status: import(".prisma/client").$Enums.status_code;
             pessoId: string;
             equipamentoId: string;
@@ -239,8 +255,107 @@ export declare class EntregraService {
         entrega?: undefined;
         ultimaEntregaCestaBasica?: undefined;
     }>;
-    findAllRelatorioPorData({ dateinicial, datefinal, pessoId, usuarioId, equipamentoId, beneficioId, statusid, }: BuscaEntrega): Promise<({
-        equipamento: {
+    findAllRelatorioPorData({ dateinicial, datefinal, pessoId, usuarioId, equipamentoId, beneficioId, statusid, }: BuscaEntrega): Promise<{
+        entregas: ({
+            equipamento: {
+                id: string;
+                nome: string;
+                responsavel: string;
+                sobre: string;
+                observacao: string;
+                cep: string;
+                logradouro: string;
+                complemento: string;
+                bairro: string;
+                localidade: string;
+                numero: string;
+                uf: string;
+                status: import(".prisma/client").$Enums.status_code;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+            usuario: {
+                id: string;
+                nome: string;
+                email: string;
+                senha: string;
+                telefone: string;
+                status: import(".prisma/client").$Enums.status_code;
+                equipamentoId: string;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+            pessoa: {
+                id: string;
+                nome: string;
+                cpf: string;
+                sexo: string;
+                whastapp: number;
+                telefone: string;
+                email: string;
+                datanascimento: Date;
+                rg: string;
+                parentesco: string;
+                escolaridade: string;
+                estadocivil: string;
+                renda: import("@prisma/client/runtime/library").Decimal;
+                ctpsassinada: number;
+                ppcl: number;
+                gestante: number;
+                observacao: string;
+                observacaorestrita: string;
+                motivoexclusao: string;
+                cep: string;
+                logradouro: string;
+                complemento: string;
+                bairro: string;
+                localidade: string;
+                numero: string;
+                uf: string;
+                status: import(".prisma/client").$Enums.status_code;
+                equipamentoId: string;
+                pessoaId: string;
+                usuarioId: string;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+            beneficio: {
+                id: string;
+                nome: string;
+                descricao: string;
+                categoria: string;
+                valor: import("@prisma/client/runtime/library").Decimal;
+                status: import(".prisma/client").$Enums.status_code;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+        } & {
+            id: string;
+            quantidade: number;
+            observacao: string;
+            datacadastro: Date;
+            motivo: string;
+            nivel: string;
+            status: import(".prisma/client").$Enums.status_code;
+            pessoId: string;
+            equipamentoId: string;
+            beneficioId: string;
+            usuarioId: string;
+            createdAt: Date;
+            updatedAt: Date;
+        })[];
+        usuarios: {
+            id: string;
+            nome: string;
+            email: string;
+            senha: string;
+            telefone: string;
+            status: import(".prisma/client").$Enums.status_code;
+            equipamentoId: string;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
+        equipamentos: {
             id: string;
             nome: string;
             responsavel: string;
@@ -256,78 +371,15 @@ export declare class EntregraService {
             status: import(".prisma/client").$Enums.status_code;
             createdAt: Date;
             updatedAt: Date;
-        };
-        usuario: {
-            id: string;
-            nome: string;
-            email: string;
-            senha: string;
-            telefone: string;
-            status: import(".prisma/client").$Enums.status_code;
-            equipamentoId: string;
-            createdAt: Date;
-            updatedAt: Date;
-        };
-        pessoa: {
-            id: string;
-            nome: string;
-            cpf: string;
-            sexo: string;
-            whastapp: number;
-            telefone: string;
-            email: string;
-            datanascimento: Date;
-            rg: string;
-            parentesco: string;
-            escolaridade: string;
-            estadocivil: string;
-            renda: import("@prisma/client/runtime/library").Decimal;
-            ctpsassinada: number;
-            ppcl: number;
-            gestante: number;
-            observacao: string;
-            observacaorestrita: string;
-            cep: string;
-            logradouro: string;
-            complemento: string;
-            bairro: string;
-            localidade: string;
-            numero: string;
-            uf: string;
-            status: import(".prisma/client").$Enums.status_code;
-            equipamentoId: string;
-            pessoaId: string;
-            createdAt: Date;
-            updatedAt: Date;
-        };
-        beneficio: {
-            id: string;
-            nome: string;
-            descricao: string;
-            categoria: string;
-            valor: import("@prisma/client/runtime/library").Decimal;
-            status: import(".prisma/client").$Enums.status_code;
-            createdAt: Date;
-            updatedAt: Date;
-        };
-    } & {
+        }[];
+    }>;
+    changeStatus(data: DefIndef): Promise<{
         id: string;
         quantidade: number;
         observacao: string;
         datacadastro: Date;
-        status: import(".prisma/client").$Enums.status_code;
-        pessoId: string;
-        equipamentoId: string;
-        beneficioId: string;
-        usuarioId: string;
-        createdAt: Date;
-        updatedAt: Date;
-    })[]>;
-    changeStatus(id: string): Promise<{
-        id: string;
-        quantidade: number;
-        observacao: string;
-        datacadastro: Date;
+        motivo: string;
+        nivel: string;
         status: import(".prisma/client").$Enums.status_code;
         pessoId: string;
         equipamentoId: string;

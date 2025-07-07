@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class BuscaEntrega {
   @IsNotEmpty()
@@ -16,4 +16,21 @@ export class BuscaEntrega {
   beneficioId: string;
 
   statusid: string;
+}
+
+export class DefIndef {
+  @IsUUID()
+  id: string;
+
+  @IsUUID()
+  usuarioId: string;
+
+  @IsString()
+  status: string;
+
+  @IsString()
+  motivo: string;
+
+  @IsString()
+  nivel?: string;
 }

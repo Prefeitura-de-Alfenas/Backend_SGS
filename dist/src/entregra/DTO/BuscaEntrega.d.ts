@@ -7,3 +7,10 @@ export declare class BuscaEntrega {
     beneficioId: string;
     statusid: string;
 }
+export declare class DefIndef {
+    id: string;
+    usuarioId: string;
+    status: string;
+    motivo: string;
+    nivel?: string;
+}

@@ -13,6 +13,7 @@ exports.EntregraService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const date_fns_1 = require("date-fns");
+const client_1 = require("@prisma/client");
 let EntregraService = class EntregraService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -44,7 +45,7 @@ let EntregraService = class EntregraService {
             return { error: error.message };
         }
     }
-    async findAllForPessoas(id, take, skip, filter) {
+    async findAllForPessoas(id, take, skip) {
         try {
             const takeNumber = parseInt(take);
             const skipNumber = parseInt(skip);
@@ -53,7 +54,7 @@ let EntregraService = class EntregraService {
                 where: {
                     pessoId: id,
                     status: {
-                        in: ['ativo', 'pendente'],
+                        in: ['ativo', 'pendente', 'inativo'],
                     },
                 },
                 include: {
@@ -69,7 +70,7 @@ let EntregraService = class EntregraService {
             return { error: error.message };
         }
     }
-    async findAll(take, skip, filter) {
+    async findAll(take, skip) {
         try {
             const takeNumber = parseInt(take);
             const skipNumber = parseInt(skip);
@@ -132,31 +133,24 @@ let EntregraService = class EntregraService {
         }
     }
     async findAllRelatorioPorData({ dateinicial, datefinal, pessoId, usuarioId, equipamentoId, beneficioId, statusid, }) {
-        const formattedDateInicial = (0, date_fns_1.format)(new Date(dateinicial), 'yyyy-MM-dd HH:mm:ss');
-        const formattedDateFinal = (0, date_fns_1.format)(new Date(datefinal), 'yyyy-MM-dd HH:mm:ss');
-        const nextDayDateFinal = (0, date_fns_1.addDays)(formattedDateFinal, 1);
+        const formattedDateInicial = new Date(dateinicial);
+        const formattedDateFinal = (0, date_fns_1.addDays)(new Date(datefinal), 1);
         const whereClause = {
-            status: 'ativo',
             datacadastro: {
-                gte: new Date(formattedDateInicial),
-                lte: new Date(nextDayDateFinal),
+                gte: formattedDateInicial,
+                lte: formattedDateFinal,
             },
         };
-        if (pessoId) {
+        if (pessoId)
             whereClause.pessoId = pessoId;
-        }
-        if (equipamentoId) {
+        if (equipamentoId)
             whereClause.equipamentoId = equipamentoId;
-        }
-        if (usuarioId) {
+        if (usuarioId)
             whereClause.usuarioId = usuarioId;
-        }
-        if (beneficioId) {
+        if (beneficioId)
             whereClause.beneficioId = beneficioId;
-        }
-        if (statusid) {
+        if (statusid)
             whereClause.status = statusid;
-        }
         const entregas = await this.prisma.entrega.findMany({
             where: whereClause,
             include: {
@@ -169,32 +163,30 @@ let EntregraService = class EntregraService {
                 createdAt: 'desc',
             },
         });
-        return entregas;
+        const usuarios = await this.prisma.usuario.findMany();
+        const equipamentos = await this.prisma.equipamento.findMany();
+        return { entregas, usuarios, equipamentos };
     }
-    async changeStatus(id) {
+    async changeStatus(data) {
+        const { id, status, motivo, usuarioId, nivel } = data;
         const entrega = await this.prisma.entrega.findUnique({
             where: { id },
         });
         if (!entrega) {
             return { error: 'Entrega não existe' };
         }
-        if (entrega.status == 'pendente') {
-            const changeUser = await this.prisma.entrega.update({
-                where: {
-                    id,
-                },
-                data: {
-                    status: 'ativo',
-                },
-            });
-            return changeUser;
+        if (status && !Object.values(client_1.status_code).includes(status)) {
+            return { error: 'status inválido' };
         }
         const changeUser = await this.prisma.entrega.update({
             where: {
                 id,
             },
             data: {
-                status: entrega.status == 'ativo' ? 'inativo' : 'ativo',
+                status: status,
+                motivo: motivo,
+                usuarioId: usuarioId,
+                nivel,
             },
         });
         return changeUser;

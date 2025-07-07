@@ -26,20 +26,20 @@ let EntregraController = class EntregraController {
     async Create(createEtnregaDTO) {
         return this.entregraService.create(createEtnregaDTO);
     }
-    async GetAll(take, skip, filter) {
-        return this.entregraService.findAll(take, skip, filter);
+    async GetAll(take, skip) {
+        return this.entregraService.findAll(take, skip);
     }
     async GetById(id) {
         return this.entregraService.findById(id);
     }
-    async GetAllForPessoas(id, take, skip, filter) {
-        return this.entregraService.findAllForPessoas(id, take, skip, filter);
+    async GetAllForPessoas(id, take, skip) {
+        return this.entregraService.findAllForPessoas(id, take, skip);
     }
     async findallForRelatorioPorData(getBuscaDto) {
         return this.entregraService.findAllRelatorioPorData(getBuscaDto);
     }
-    async update(id) {
-        return this.entregraService.changeStatus(id);
+    async update(body) {
+        return this.entregraService.changeStatus(body);
     }
 };
 exports.EntregraController = EntregraController;
@@ -54,9 +54,8 @@ __decorate([
     (0, common_1.Get)('findall/:take/skip/:skip/:filter?'),
     __param(0, (0, common_1.Param)('take')),
     __param(1, (0, common_1.Param)('skip')),
-    __param(2, (0, common_1.Param)('filter')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], EntregraController.prototype, "GetAll", null);
 __decorate([
@@ -71,9 +70,8 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Param)('take')),
     __param(2, (0, common_1.Param)('skip')),
-    __param(3, (0, common_1.Param)('filter')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], EntregraController.prototype, "GetAllForPessoas", null);
 __decorate([
@@ -84,10 +82,10 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], EntregraController.prototype, "findallForRelatorioPorData", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Patch)(),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [BuscaEntrega_1.DefIndef]),
     __metadata("design:returntype", Promise)
 ], EntregraController.prototype, "update", null);
 exports.EntregraController = EntregraController = __decorate([

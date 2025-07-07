@@ -26,6 +26,7 @@ export declare class ArquivoService {
             gestante: number;
             observacao: string;
             observacaorestrita: string;
+            motivoexclusao: string;
             cep: string;
             logradouro: string;
             complemento: string;
@@ -36,6 +37,7 @@ export declare class ArquivoService {
             status: import(".prisma/client").$Enums.status_code;
             equipamentoId: string;
             pessoaId: string;
+            usuarioId: string;
             createdAt: Date;
             updatedAt: Date;
         };

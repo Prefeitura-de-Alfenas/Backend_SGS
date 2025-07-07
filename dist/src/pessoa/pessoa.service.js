@@ -144,6 +144,16 @@ let PessoaService = class PessoaService {
     }
     async create(createPessoaDto) {
         try {
+            if (createPessoaDto.pessoaId !== null) {
+                const responsavel = await this.prisma.pessoa.findUnique({
+                    where: {
+                        id: createPessoaDto.pessoaId,
+                    },
+                });
+                if (responsavel.status === 'inativo') {
+                    return { error: 'Responsavel desativado' };
+                }
+            }
             const { pessoaDeficiencia, pessoaFonteRenda, ...dadosPessoa } = createPessoaDto;
             const { nome, ...resto } = dadosPessoa;
             const pessoa = await this.prisma.pessoa.create({
@@ -179,6 +189,17 @@ let PessoaService = class PessoaService {
         try {
             const { pessoaDeficiencia, pessoaFonteRenda, ...dadosPessoa } = updatePessoaDto;
             const { nome, ...resto } = dadosPessoa;
+            const pessoaIsAtivo = await this.prisma.pessoa.findFirst({
+                where: {
+                    id,
+                },
+            });
+            if (!pessoaIsAtivo) {
+                return { error: 'Pessoa não existe' };
+            }
+            if (pessoaIsAtivo.status === 'inativo') {
+                return { error: 'Pessoa Inativa' };
+            }
             const pessoa = await this.prisma.pessoa.update({
                 where: { id },
                 data: {
@@ -227,13 +248,15 @@ let PessoaService = class PessoaService {
                 cpf: {
                     contains: filter,
                 },
-                status: 'ativo',
             },
             orderBy: {
                 createdAt: 'desc',
             },
             take: takeNumber,
             skip: page,
+            include: {
+                usuario: true,
+            },
         });
         return pessoas;
     }
@@ -360,7 +383,8 @@ let PessoaService = class PessoaService {
         });
         return familiares;
     }
-    async changeStatus(id) {
+    async changeStatus(data) {
+        const { id, motivo, usuarioId } = data;
         return await this.prisma.$transaction(async (tx) => {
             const pessoa = await tx.pessoa.findUnique({
                 where: { id },
@@ -384,6 +408,8 @@ let PessoaService = class PessoaService {
                 data: {
                     status: pessoa.status === 'ativo' ? 'inativo' : 'ativo',
                     pessoaId: null,
+                    motivoexclusao: motivo ? motivo : '',
+                    usuarioId: usuarioId ? usuarioId : '',
                 },
             });
             return updated;
@@ -429,6 +455,11 @@ let PessoaService = class PessoaService {
                         error: 'Pessoa não encontrada',
                     };
                 }
+                if (pessoa.status === 'inativo') {
+                    return {
+                        error: 'Pessoa foi inativada',
+                    };
+                }
                 if (pessoa.familiares.length > 0) {
                     return {
                         error: 'Pessoa não pode ser movida pois é responsável com familiares',
@@ -445,6 +476,7 @@ let PessoaService = class PessoaService {
                         localidade: true,
                         numero: true,
                         uf: true,
+                        status: true,
                     },
                 });
                 if (!novoResponsavel) {
@@ -455,6 +487,11 @@ let PessoaService = class PessoaService {
                 if (novoResponsavel.pessoaId !== null) {
                     return {
                         error: 'Novo responsável não é um responsável principal',
+                    };
+                }
+                if (novoResponsavel.status === 'inativo') {
+                    return {
+                        error: 'Responsavel foi inativada',
                     };
                 }
                 const pessoaAtualizada = await tx.pessoa.update({
@@ -477,7 +514,6 @@ let PessoaService = class PessoaService {
             });
         }
         catch (error) {
-            console.log('error', error);
             return {
                 error: `Erro ao mover pessoa: ${error.message || 'erro desconhecido'}`,
             };

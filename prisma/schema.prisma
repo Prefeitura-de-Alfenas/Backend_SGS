@@ -35,7 +35,7 @@ model Usuario{
     entregas Entrega[]
     equipamento Equipamento @relation(fields: [equipamentoId], references: [id])
     equipamentoId String
-
+    pessoas   Pessoa[]
     createdAt     DateTime  @default(now())
     updatedAt     DateTime? @updatedAt
 
@@ -72,6 +72,7 @@ model Pessoa {
     gestante Int
     observacao String? @db.Text
     observacaorestrita  String? @db.Text
+    motivoexclusao String? @db.Text
     cep String
     logradouro String
     complemento String?
@@ -96,6 +97,9 @@ model Pessoa {
    beneficios PessoasOnBeneficios[]
    pessoaDeficiencia PessoaDeficiencia[]
    pessoaFonteRenda PessoaFonteRenda[]
+
+   usuario   Usuario? @relation(fields: [usuarioId], references: [id])
+   usuarioId String?
 
    createdAt     DateTime  @default(now())
    updatedAt     DateTime? @updatedAt
@@ -187,8 +191,10 @@ model Entrega{
     quantidade  Int
     observacao  String
     datacadastro DateTime  @default(now())
+    motivo  String? @db.Text
+    nivel  String? 
     status status_code  @default(pendente)
-   
+    
     pessoa Pessoa @relation(fields: [pessoId], references: [id])
     pessoId String
 

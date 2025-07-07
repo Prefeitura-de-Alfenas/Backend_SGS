@@ -11,7 +11,7 @@ import { EntregraService } from './entregra.service';
 import { CreateEntregaDto } from './DTO/EntregaCreate';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { BuscaEntrega } from './DTO/BuscaEntrega';
+import { BuscaEntrega, DefIndef } from './DTO/BuscaEntrega';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('entregra')
@@ -27,9 +27,9 @@ export class EntregraController {
   async GetAll(
     @Param('take') take: string,
     @Param('skip') skip: string,
-    @Param('filter') filter?: string,
+    //@Param('filter') filter?: string,
   ) {
-    return this.entregraService.findAll(take, skip, filter);
+    return this.entregraService.findAll(take, skip);
   }
 
   @Get(':id')
@@ -42,9 +42,9 @@ export class EntregraController {
     @Param('id') id: string,
     @Param('take') take: string,
     @Param('skip') skip: string,
-    @Param('filter') filter?: string,
+    //@Param('filter') filter?: string,
   ) {
-    return this.entregraService.findAllForPessoas(id, take, skip, filter);
+    return this.entregraService.findAllForPessoas(id, take, skip);
   }
 
   @Post('entregarelatoriodate')
@@ -52,8 +52,8 @@ export class EntregraController {
     return this.entregraService.findAllRelatorioPorData(getBuscaDto);
   }
 
-  @Patch(':id')
-  async update(@Param('id') id: string) {
-    return this.entregraService.changeStatus(id);
+  @Patch()
+  async update(@Body() body: DefIndef) {
+    return this.entregraService.changeStatus(body);
   }
 }

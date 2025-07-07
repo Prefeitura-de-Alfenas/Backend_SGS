@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BuscaEntrega = void 0;
+exports.DefIndef = exports.BuscaEntrega = void 0;
 const class_validator_1 = require("class-validator");
 class BuscaEntrega {
 }
@@ -22,4 +22,27 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], BuscaEntrega.prototype, "datefinal", void 0);
+class DefIndef {
+}
+exports.DefIndef = DefIndef;
+__decorate([
+    (0, class_validator_1.IsUUID)(),
+    __metadata("design:type", String)
+], DefIndef.prototype, "id", void 0);
+__decorate([
+    (0, class_validator_1.IsUUID)(),
+    __metadata("design:type", String)
+], DefIndef.prototype, "usuarioId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], DefIndef.prototype, "status", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], DefIndef.prototype, "motivo", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], DefIndef.prototype, "nivel", void 0);
 //# sourceMappingURL=BuscaEntrega.js.map

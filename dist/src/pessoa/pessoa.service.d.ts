@@ -1,5 +1,5 @@
 import { PrismaService } from 'src/prisma/prisma.service';
-import { MoverPessoaDto } from './dto/pessoadto';
+import { ChanceStatusDto, MoverPessoaDto } from './dto/pessoadto';
 export declare class PessoaService {
     private prisma;
     constructor(prisma: PrismaService);
@@ -40,6 +40,7 @@ export declare class PessoaService {
         gestante: number;
         observacao: string;
         observacaorestrita: string;
+        motivoexclusao: string;
         cep: string;
         logradouro: string;
         complemento: string;
@@ -50,6 +51,7 @@ export declare class PessoaService {
         status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
         pessoaId: string;
+        usuarioId: string;
         createdAt: Date;
         updatedAt: Date;
     }) | {
@@ -74,6 +76,7 @@ export declare class PessoaService {
         gestante: number;
         observacao: string;
         observacaorestrita: string;
+        motivoexclusao: string;
         cep: string;
         logradouro: string;
         complemento: string;
@@ -84,12 +87,25 @@ export declare class PessoaService {
         status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
         pessoaId: string;
+        usuarioId: string;
         createdAt: Date;
         updatedAt: Date;
     } | {
         error: any;
     }>;
-    findAll(take: string, skip: string, filter: string): Promise<{
+    findAll(take: string, skip: string, filter: string): Promise<({
+        usuario: {
+            id: string;
+            nome: string;
+            email: string;
+            senha: string;
+            telefone: string;
+            status: import(".prisma/client").$Enums.status_code;
+            equipamentoId: string;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+    } & {
         id: string;
         nome: string;
         cpf: string;
@@ -108,6 +124,7 @@ export declare class PessoaService {
         gestante: number;
         observacao: string;
         observacaorestrita: string;
+        motivoexclusao: string;
         cep: string;
         logradouro: string;
         complemento: string;
@@ -118,9 +135,10 @@ export declare class PessoaService {
         status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
         pessoaId: string;
+        usuarioId: string;
         createdAt: Date;
         updatedAt: Date;
-    }[]>;
+    })[]>;
     findAllRelatorioPorData(dateinicial: string, datefinal: string, filter: string): Promise<{
         id: string;
         nome: string;
@@ -140,6 +158,7 @@ export declare class PessoaService {
         gestante: number;
         observacao: string;
         observacaorestrita: string;
+        motivoexclusao: string;
         cep: string;
         logradouro: string;
         complemento: string;
@@ -150,6 +169,7 @@ export declare class PessoaService {
         status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
         pessoaId: string;
+        usuarioId: string;
         createdAt: Date;
         updatedAt: Date;
     }[]>;
@@ -174,6 +194,7 @@ export declare class PessoaService {
         gestante: number;
         observacao: string;
         observacaorestrita: string;
+        motivoexclusao: string;
         cep: string;
         logradouro: string;
         complemento: string;
@@ -184,10 +205,11 @@ export declare class PessoaService {
         status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
         pessoaId: string;
+        usuarioId: string;
         createdAt: Date;
         updatedAt: Date;
     }[]>;
-    changeStatus(id: string): Promise<{
+    changeStatus(data: ChanceStatusDto): Promise<{
         id: string;
         nome: string;
         cpf: string;
@@ -206,6 +228,7 @@ export declare class PessoaService {
         gestante: number;
         observacao: string;
         observacaorestrita: string;
+        motivoexclusao: string;
         cep: string;
         logradouro: string;
         complemento: string;
@@ -216,6 +239,7 @@ export declare class PessoaService {
         status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
         pessoaId: string;
+        usuarioId: string;
         createdAt: Date;
         updatedAt: Date;
     } | {
@@ -240,6 +264,7 @@ export declare class PessoaService {
         gestante: number;
         observacao: string;
         observacaorestrita: string;
+        motivoexclusao: string;
         cep: string;
         logradouro: string;
         complemento: string;
@@ -250,6 +275,7 @@ export declare class PessoaService {
         status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
         pessoaId: string;
+        usuarioId: string;
         createdAt: Date;
         updatedAt: Date;
     }[]>;
@@ -278,6 +304,7 @@ export declare class PessoaService {
             gestante: number;
             observacao: string;
             observacaorestrita: string;
+            motivoexclusao: string;
             cep: string;
             logradouro: string;
             complemento: string;
@@ -288,6 +315,7 @@ export declare class PessoaService {
             status: import(".prisma/client").$Enums.status_code;
             equipamentoId: string;
             pessoaId: string;
+            usuarioId: string;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -319,6 +347,7 @@ export declare class PessoaService {
         gestante: number;
         observacao: string;
         observacaorestrita: string;
+        motivoexclusao: string;
         cep: string;
         logradouro: string;
         complemento: string;
@@ -329,6 +358,7 @@ export declare class PessoaService {
         status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
         pessoaId: string;
+        usuarioId: string;
         createdAt: Date;
         updatedAt: Date;
     }[]>;

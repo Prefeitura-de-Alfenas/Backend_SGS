@@ -1,4 +1,4 @@
-import { IsUUID } from 'class-validator';
+import { IsString, IsUUID } from 'class-validator';
 
 export class MoverPessoaDto {
   @IsUUID()
@@ -6,4 +6,15 @@ export class MoverPessoaDto {
 
   @IsUUID()
   novoResponsavelId: string;
+}
+
+export class ChanceStatusDto {
+  @IsUUID()
+  usuarioId: string;
+
+  @IsUUID()
+  id: string;
+
+  @IsString()
+  motivo: string;
 }

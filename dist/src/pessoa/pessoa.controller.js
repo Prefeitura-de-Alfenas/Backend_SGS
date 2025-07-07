@@ -31,8 +31,10 @@ let PessoaController = class PessoaController {
     async enderecoRepetido(cep, numero) {
         return this.pessoaService.buscaEnderecoRepetido(cep, numero);
     }
+    async changeStatusPessoa(body) {
+        return this.pessoaService.changeStatus(body);
+    }
     async moverPessoaParaOutroResponsavel(body) {
-        console.log('body', body);
         return this.pessoaService.moverPessoaParaOutroResponsavel(body);
     }
     async findall(take, skip, filter) {
@@ -62,9 +64,6 @@ let PessoaController = class PessoaController {
     async chagneResponsavelFamiliar(idFamilar) {
         return this.pessoaService.changeResponsavelFamiliar(idFamilar);
     }
-    async changeStatusPessoa(id) {
-        return this.pessoaService.changeStatus(id);
-    }
     async findallInativePessoas(take, skip, filter) {
         return this.pessoaService.findAllInativePessoas(take, skip, filter);
     }
@@ -87,6 +86,13 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], PessoaController.prototype, "enderecoRepetido", null);
+__decorate([
+    (0, common_1.Patch)('changestatus'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [pessoadto_1.ChanceStatusDto]),
+    __metadata("design:returntype", Promise)
+], PessoaController.prototype, "changeStatusPessoa", null);
 __decorate([
     (0, common_1.Patch)('mover-para-responsavel'),
     __param(0, (0, common_1.Body)()),
@@ -165,13 +171,6 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], PessoaController.prototype, "chagneResponsavelFamiliar", null);
-__decorate([
-    (0, common_1.Patch)('changestatus/:id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], PessoaController.prototype, "changeStatusPessoa", null);
 __decorate([
     (0, roles_decorator_1.Roles)(['Admin']),
     (0, common_1.Get)('findallinative/:take/skip/:skip/:filter?'),

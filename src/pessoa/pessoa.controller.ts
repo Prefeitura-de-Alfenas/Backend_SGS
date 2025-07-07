@@ -13,7 +13,7 @@ import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { MoverPessoaDto } from './dto/pessoadto';
+import { ChanceStatusDto, MoverPessoaDto } from './dto/pessoadto';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('pessoa')
 export class PessoaController {
@@ -30,10 +30,12 @@ export class PessoaController {
   ) {
     return this.pessoaService.buscaEnderecoRepetido(cep, numero);
   }
-
+  @Patch('changestatus')
+  async changeStatusPessoa(@Body() body: ChanceStatusDto) {
+    return this.pessoaService.changeStatus(body);
+  }
   @Patch('mover-para-responsavel')
   async moverPessoaParaOutroResponsavel(@Body() body: MoverPessoaDto) {
-    console.log('body', body);
     return this.pessoaService.moverPessoaParaOutroResponsavel(body);
   }
 
@@ -102,10 +104,6 @@ export class PessoaController {
     return this.pessoaService.changeResponsavelFamiliar(idFamilar);
   }
 
-  @Patch('changestatus/:id')
-  async changeStatusPessoa(@Param('id') id: string) {
-    return this.pessoaService.changeStatus(id);
-  }
   @Roles(['Admin'])
   @Get('findallinative/:take/skip/:skip/:filter?')
   async findallInativePessoas(

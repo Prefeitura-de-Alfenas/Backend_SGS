@@ -4,7 +4,7 @@ import * as fs from 'fs'; // Use importação correta para fs
 import * as csv from 'csv-parser'; // Use importação correta para csv-parser
 import * as path from 'path';
 import { addDays, format, parse } from 'date-fns'; // Importe a função parse do date-fns
-import { MoverPessoaDto } from './dto/pessoadto';
+import { ChanceStatusDto, MoverPessoaDto } from './dto/pessoadto';
 @Injectable()
 export class PessoaService {
   constructor(private prisma: PrismaService) {}
@@ -148,9 +148,20 @@ export class PessoaService {
   async create(createPessoaDto: any) {
     try {
       // Extrai os arrays de IDs das relações M:N
+      if (createPessoaDto.pessoaId !== null) {
+        const responsavel = await this.prisma.pessoa.findUnique({
+          where: {
+            id: createPessoaDto.pessoaId,
+          },
+        });
+        if (responsavel.status === 'inativo') {
+          return { error: 'Responsavel desativado' };
+        }
+      }
       const { pessoaDeficiencia, pessoaFonteRenda, ...dadosPessoa } =
         createPessoaDto;
       const { nome, ...resto } = dadosPessoa;
+
       const pessoa = await this.prisma.pessoa.create({
         data: {
           nome: nome.toUpperCase(),
@@ -194,6 +205,17 @@ export class PessoaService {
       const { pessoaDeficiencia, pessoaFonteRenda, ...dadosPessoa } =
         updatePessoaDto;
       const { nome, ...resto } = dadosPessoa;
+      const pessoaIsAtivo = await this.prisma.pessoa.findFirst({
+        where: {
+          id,
+        },
+      });
+      if (!pessoaIsAtivo) {
+        return { error: 'Pessoa não existe' };
+      }
+      if (pessoaIsAtivo.status === 'inativo') {
+        return { error: 'Pessoa Inativa' };
+      }
       // 1. Atualiza os dados principais da Pessoa
       const pessoa = await this.prisma.pessoa.update({
         where: { id },
@@ -250,13 +272,15 @@ export class PessoaService {
         cpf: {
           contains: filter,
         },
-        status: 'ativo',
       },
       orderBy: {
         createdAt: 'desc',
       },
       take: takeNumber,
       skip: page,
+      include: {
+        usuario: true,
+      },
     });
     return pessoas;
   }
@@ -407,7 +431,8 @@ export class PessoaService {
     return familiares;
   }
 
-  async changeStatus(id: string) {
+  async changeStatus(data: ChanceStatusDto) {
+    const { id, motivo, usuarioId } = data;
     return await this.prisma.$transaction(async (tx) => {
       // Busca a pessoa com os relacionamentos necessários
       const pessoa = await tx.pessoa.findUnique({
@@ -438,6 +463,8 @@ export class PessoaService {
         data: {
           status: pessoa.status === 'ativo' ? 'inativo' : 'ativo',
           pessoaId: null,
+          motivoexclusao: motivo ? motivo : '',
+          usuarioId: usuarioId ? usuarioId : '',
         },
       });
 
@@ -489,6 +516,11 @@ export class PessoaService {
             error: 'Pessoa não encontrada',
           };
         }
+        if (pessoa.status === 'inativo') {
+          return {
+            error: 'Pessoa foi inativada',
+          };
+        }
 
         if (pessoa.familiares.length > 0) {
           return {
@@ -509,6 +541,7 @@ export class PessoaService {
             localidade: true,
             numero: true,
             uf: true,
+            status: true,
           },
         });
 
@@ -521,6 +554,12 @@ export class PessoaService {
         if (novoResponsavel.pessoaId !== null) {
           return {
             error: 'Novo responsável não é um responsável principal',
+          };
+        }
+
+        if (novoResponsavel.status === 'inativo') {
+          return {
+            error: 'Responsavel foi inativada',
           };
         }
 
@@ -546,7 +585,7 @@ export class PessoaService {
       });
     } catch (error) {
       // Aqui captura qualquer erro inesperado, inclusive do Prisma
-      console.log('error', error);
+
       return {
         error: `Erro ao mover pessoa: ${error.message || 'erro desconhecido'}`,
       };
