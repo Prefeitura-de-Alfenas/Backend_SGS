@@ -45,6 +45,25 @@ let EntregraService = class EntregraService {
             return { error: error.message };
         }
     }
+    async createAvulsa(createEntregaAvulsoDTO) {
+        try {
+            const usuario = await this.prisma.usuario.findUnique({
+                where: {
+                    id: createEntregaAvulsoDTO.usuarioId,
+                },
+            });
+            if (!usuario) {
+                return { error: 'Usuario não existe' };
+            }
+            const entrega = await this.prisma.entregaAvulsa.create({
+                data: createEntregaAvulsoDTO,
+            });
+            return entrega;
+        }
+        catch (error) {
+            return { error: error.message };
+        }
+    }
     async findAllForPessoas(id, take, skip) {
         try {
             const takeNumber = parseInt(take);
@@ -157,6 +176,38 @@ let EntregraService = class EntregraService {
                 equipamento: true,
                 beneficio: true,
                 pessoa: true,
+                usuario: true,
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+        const usuarios = await this.prisma.usuario.findMany();
+        const equipamentos = await this.prisma.equipamento.findMany();
+        return { entregas, usuarios, equipamentos };
+    }
+    async findAllEntregaAvulsa({ dateinicial, datefinal, usuarioId, equipamentoId, beneficioId, statusid, }) {
+        const formattedDateInicial = new Date(dateinicial);
+        const formattedDateFinal = (0, date_fns_1.addDays)(new Date(datefinal), 1);
+        const whereClause = {
+            datacadastro: {
+                gte: formattedDateInicial,
+                lte: formattedDateFinal,
+            },
+        };
+        if (equipamentoId)
+            whereClause.equipamentoId = equipamentoId;
+        if (usuarioId)
+            whereClause.usuarioId = usuarioId;
+        if (beneficioId)
+            whereClause.beneficioId = beneficioId;
+        if (statusid)
+            whereClause.status = statusid;
+        const entregas = await this.prisma.entregaAvulsa.findMany({
+            where: whereClause,
+            include: {
+                equipamento: true,
+                beneficio: true,
                 usuario: true,
             },
             orderBy: {

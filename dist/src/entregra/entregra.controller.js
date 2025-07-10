@@ -26,6 +26,9 @@ let EntregraController = class EntregraController {
     async Create(createEtnregaDTO) {
         return this.entregraService.create(createEtnregaDTO);
     }
+    async CreateAvulso(createEtnregaAvulsoDTO) {
+        return this.entregraService.createAvulsa(createEtnregaAvulsoDTO);
+    }
     async GetAll(take, skip) {
         return this.entregraService.findAll(take, skip);
     }
@@ -37,6 +40,9 @@ let EntregraController = class EntregraController {
     }
     async findallForRelatorioPorData(getBuscaDto) {
         return this.entregraService.findAllRelatorioPorData(getBuscaDto);
+    }
+    async findallEntregaAvulsa(getBuscaDto) {
+        return this.entregraService.findAllEntregaAvulsa(getBuscaDto);
     }
     async update(body) {
         return this.entregraService.changeStatus(body);
@@ -50,6 +56,13 @@ __decorate([
     __metadata("design:paramtypes", [EntregaCreate_1.CreateEntregaDto]),
     __metadata("design:returntype", Promise)
 ], EntregraController.prototype, "Create", null);
+__decorate([
+    (0, common_1.Post)('avulso'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [EntregaCreate_1.CreateEntregaAvulsaDto]),
+    __metadata("design:returntype", Promise)
+], EntregraController.prototype, "CreateAvulso", null);
 __decorate([
     (0, common_1.Get)('findall/:take/skip/:skip/:filter?'),
     __param(0, (0, common_1.Param)('take')),
@@ -81,6 +94,13 @@ __decorate([
     __metadata("design:paramtypes", [BuscaEntrega_1.BuscaEntrega]),
     __metadata("design:returntype", Promise)
 ], EntregraController.prototype, "findallForRelatorioPorData", null);
+__decorate([
+    (0, common_1.Post)('entregaavulsarelatorio'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [BuscaEntrega_1.BuscaEntrega]),
+    __metadata("design:returntype", Promise)
+], EntregraController.prototype, "findallEntregaAvulsa", null);
 __decorate([
     (0, common_1.Patch)(),
     __param(0, (0, common_1.Body)()),

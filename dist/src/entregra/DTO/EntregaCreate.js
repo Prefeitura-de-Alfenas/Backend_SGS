@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateEntregaDto = void 0;
+exports.CreateEntregaAvulsaDto = exports.CreateEntregaDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateEntregaDto {
 }
@@ -38,4 +38,35 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateEntregaDto.prototype, "beneficioId", void 0);
+class CreateEntregaAvulsaDto {
+}
+exports.CreateEntregaAvulsaDto = CreateEntregaAvulsaDto;
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateEntregaAvulsaDto.prototype, "usuarioId", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateEntregaAvulsaDto.prototype, "equipamentoId", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateEntregaAvulsaDto.prototype, "nome", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateEntregaAvulsaDto.prototype, "cpf", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", Number)
+], CreateEntregaAvulsaDto.prototype, "quantidade", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateEntregaAvulsaDto.prototype, "observacao", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateEntregaAvulsaDto.prototype, "beneficioId", void 0);
 //# sourceMappingURL=EntregaCreate.js.map

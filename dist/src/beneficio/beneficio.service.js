@@ -116,6 +116,19 @@ let BeneficioService = class BeneficioService {
             return { error: error.message };
         }
     }
+    async findAllBeneficio() {
+        try {
+            const belneficios = await this.prisma.beneficio.findMany({
+                orderBy: {
+                    nome: 'asc',
+                },
+            });
+            return belneficios;
+        }
+        catch (error) {
+            return { error: error.message };
+        }
+    }
 };
 exports.BeneficioService = BeneficioService;
 exports.BeneficioService = BeneficioService = __decorate([

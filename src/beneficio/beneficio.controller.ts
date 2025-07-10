@@ -22,6 +22,10 @@ export class BeneficioController {
     return this.beneficioService.create(createBeneficioDTO);
   }
 
+  @Get('getall')
+  async findAllBeneficio() {
+    return this.beneficioService.findAllBeneficio();
+  }
   @Get(':id')
   async findbyid(@Param('id') id: string) {
     return this.beneficioService.findById(id);

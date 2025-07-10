@@ -25,6 +25,9 @@ let BeneficioController = class BeneficioController {
     async create(createBeneficioDTO) {
         return this.beneficioService.create(createBeneficioDTO);
     }
+    async findAllBeneficio() {
+        return this.beneficioService.findAllBeneficio();
+    }
     async findbyid(id) {
         return this.beneficioService.findById(id);
     }
@@ -46,6 +49,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], BeneficioController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)('getall'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], BeneficioController.prototype, "findAllBeneficio", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

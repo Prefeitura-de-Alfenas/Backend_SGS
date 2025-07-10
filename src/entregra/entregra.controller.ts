@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { EntregraService } from './entregra.service';
-import { CreateEntregaDto } from './DTO/EntregaCreate';
+import { CreateEntregaAvulsaDto, CreateEntregaDto } from './DTO/EntregaCreate';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { BuscaEntrega, DefIndef } from './DTO/BuscaEntrega';
@@ -21,6 +21,11 @@ export class EntregraController {
   @Post()
   async Create(@Body() createEtnregaDTO: CreateEntregaDto) {
     return this.entregraService.create(createEtnregaDTO);
+  }
+
+  @Post('avulso')
+  async CreateAvulso(@Body() createEtnregaAvulsoDTO: CreateEntregaAvulsaDto) {
+    return this.entregraService.createAvulsa(createEtnregaAvulsoDTO);
   }
 
   @Get('findall/:take/skip/:skip/:filter?')
@@ -50,6 +55,10 @@ export class EntregraController {
   @Post('entregarelatoriodate')
   async findallForRelatorioPorData(@Body() getBuscaDto: BuscaEntrega) {
     return this.entregraService.findAllRelatorioPorData(getBuscaDto);
+  }
+  @Post('entregaavulsarelatorio')
+  async findallEntregaAvulsa(@Body() getBuscaDto: BuscaEntrega) {
+    return this.entregraService.findAllEntregaAvulsa(getBuscaDto);
   }
 
   @Patch()

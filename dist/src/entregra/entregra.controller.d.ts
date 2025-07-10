@@ -1,5 +1,5 @@
 import { EntregraService } from './entregra.service';
-import { CreateEntregaDto } from './DTO/EntregaCreate';
+import { CreateEntregaAvulsaDto, CreateEntregaDto } from './DTO/EntregaCreate';
 import { BuscaEntrega, DefIndef } from './DTO/BuscaEntrega';
 export declare class EntregraController {
     private readonly entregraService;
@@ -13,6 +13,23 @@ export declare class EntregraController {
         nivel: string;
         status: import(".prisma/client").$Enums.status_code;
         pessoId: string;
+        equipamentoId: string;
+        beneficioId: string;
+        usuarioId: string;
+        createdAt: Date;
+        updatedAt: Date;
+    } | {
+        error: any;
+    }>;
+    CreateAvulso(createEtnregaAvulsoDTO: CreateEntregaAvulsaDto): Promise<{
+        id: string;
+        nome: string;
+        cpf: string;
+        quantidade: number;
+        observacao: string;
+        datacadastro: Date;
+        motivo: string;
+        status: import(".prisma/client").$Enums.status_code;
         equipamentoId: string;
         beneficioId: string;
         usuarioId: string;
@@ -338,6 +355,90 @@ export declare class EntregraController {
             nivel: string;
             status: import(".prisma/client").$Enums.status_code;
             pessoId: string;
+            equipamentoId: string;
+            beneficioId: string;
+            usuarioId: string;
+            createdAt: Date;
+            updatedAt: Date;
+        })[];
+        usuarios: {
+            id: string;
+            nome: string;
+            email: string;
+            senha: string;
+            telefone: string;
+            status: import(".prisma/client").$Enums.status_code;
+            equipamentoId: string;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
+        equipamentos: {
+            id: string;
+            nome: string;
+            responsavel: string;
+            sobre: string;
+            observacao: string;
+            cep: string;
+            logradouro: string;
+            complemento: string;
+            bairro: string;
+            localidade: string;
+            numero: string;
+            uf: string;
+            status: import(".prisma/client").$Enums.status_code;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
+    }>;
+    findallEntregaAvulsa(getBuscaDto: BuscaEntrega): Promise<{
+        entregas: ({
+            equipamento: {
+                id: string;
+                nome: string;
+                responsavel: string;
+                sobre: string;
+                observacao: string;
+                cep: string;
+                logradouro: string;
+                complemento: string;
+                bairro: string;
+                localidade: string;
+                numero: string;
+                uf: string;
+                status: import(".prisma/client").$Enums.status_code;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+            usuario: {
+                id: string;
+                nome: string;
+                email: string;
+                senha: string;
+                telefone: string;
+                status: import(".prisma/client").$Enums.status_code;
+                equipamentoId: string;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+            beneficio: {
+                id: string;
+                nome: string;
+                descricao: string;
+                categoria: string;
+                valor: import("@prisma/client/runtime/library").Decimal;
+                status: import(".prisma/client").$Enums.status_code;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+        } & {
+            id: string;
+            nome: string;
+            cpf: string;
+            quantidade: number;
+            observacao: string;
+            datacadastro: Date;
+            motivo: string;
+            status: import(".prisma/client").$Enums.status_code;
             equipamentoId: string;
             beneficioId: string;
             usuarioId: string;

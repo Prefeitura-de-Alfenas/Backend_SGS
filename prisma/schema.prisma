@@ -36,6 +36,7 @@ model Usuario{
     equipamento Equipamento @relation(fields: [equipamentoId], references: [id])
     equipamentoId String
     pessoas   Pessoa[]
+    entregaAvulsa EntregaAvulsa[] @relation("UsuarioEntregaAvulsa")
     createdAt     DateTime  @default(now())
     updatedAt     DateTime? @updatedAt
 
@@ -176,6 +177,7 @@ model Equipamento{
     status status_code @default(ativo)
 
     entregas Entrega[]
+    entregaAvulsa EntregaAvulsa[] @relation("EquipamentoEntregaAvulsa")
 
     usuarios Usuario[]
     pessoas Pessoa[]
@@ -184,7 +186,29 @@ model Equipamento{
     updatedAt     DateTime? @updatedAt
     @@map("equipamento")
 }
+model EntregaAvulsa{
+    id String @id @default(uuid())
+    nome String
+    cpf String 
+    quantidade  Int
+    observacao  String
+    datacadastro DateTime  @default(now())
+    motivo  String? @db.Text
+    status status_code  @default(ativo)
 
+    equipamento Equipamento @relation("EquipamentoEntregaAvulsa", fields: [equipamentoId], references: [id])
+    equipamentoId String
+
+    beneficio Beneficio @relation("BeneficioEntregaAvulsa", fields: [beneficioId], references: [id])
+    beneficioId String
+
+    usuario Usuario @relation("UsuarioEntregaAvulsa",fields: [usuarioId], references: [id])
+    usuarioId String
+    
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime? @updatedAt
+     @@map("entregaavulsa")
+}
 
 model Entrega{
     id String @id @default(uuid())
@@ -222,6 +246,8 @@ model Beneficio{
     
     pessoas PessoasOnBeneficios[]
     entregas Entrega[]
+    entregaAvulsa EntregaAvulsa[] @relation("BeneficioEntregaAvulsa")
+    
     createdAt     DateTime  @default(now())
     updatedAt     DateTime? @updatedAt
     

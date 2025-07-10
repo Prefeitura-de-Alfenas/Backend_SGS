@@ -90,4 +90,16 @@ export declare class BeneficioService {
     } | {
         error: any;
     }>;
+    findAllBeneficio(): Promise<{
+        id: string;
+        nome: string;
+        descricao: string;
+        categoria: string;
+        valor: Prisma.Decimal;
+        status: import(".prisma/client").$Enums.status_code;
+        createdAt: Date;
+        updatedAt: Date;
+    }[] | {
+        error: any;
+    }>;
 }

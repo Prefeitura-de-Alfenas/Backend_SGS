@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateEntregaDto } from './DTO/EntregaCreate';
+import { CreateEntregaAvulsaDto, CreateEntregaDto } from './DTO/EntregaCreate';
 import { addDays } from 'date-fns';
 import { BuscaEntrega, DefIndef } from './DTO/BuscaEntrega';
 
@@ -58,6 +58,28 @@ export class EntregraService {
 
       const entrega = await this.prisma.entrega.create({
         data: createEntregaDTO,
+      });
+      return entrega;
+    } catch (error) {
+      return { error: error.message };
+    }
+  }
+
+  async createAvulsa(createEntregaAvulsoDTO: CreateEntregaAvulsaDto) {
+    try {
+      //Verificar se o EquipamentoId do usuario == a o equipamentoId da pessoa
+      const usuario = await this.prisma.usuario.findUnique({
+        where: {
+          id: createEntregaAvulsoDTO.usuarioId,
+        },
+      });
+
+      if (!usuario) {
+        return { error: 'Usuario não existe' };
+      }
+
+      const entrega = await this.prisma.entregaAvulsa.create({
+        data: createEntregaAvulsoDTO,
       });
       return entrega;
     } catch (error) {
@@ -188,6 +210,47 @@ export class EntregraService {
         equipamento: true,
         beneficio: true,
         pessoa: true,
+        usuario: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    const usuarios = await this.prisma.usuario.findMany();
+    const equipamentos = await this.prisma.equipamento.findMany();
+
+    return { entregas, usuarios, equipamentos };
+  }
+
+  async findAllEntregaAvulsa({
+    dateinicial,
+    datefinal,
+    usuarioId,
+    equipamentoId,
+    beneficioId,
+    statusid,
+  }: BuscaEntrega) {
+    const formattedDateInicial = new Date(dateinicial);
+    const formattedDateFinal = addDays(new Date(datefinal), 1);
+
+    const whereClause: any = {
+      datacadastro: {
+        gte: formattedDateInicial,
+        lte: formattedDateFinal,
+      },
+    };
+
+    if (equipamentoId) whereClause.equipamentoId = equipamentoId;
+    if (usuarioId) whereClause.usuarioId = usuarioId;
+    if (beneficioId) whereClause.beneficioId = beneficioId;
+    if (statusid) whereClause.status = statusid;
+
+    const entregas = await this.prisma.entregaAvulsa.findMany({
+      where: whereClause,
+      include: {
+        equipamento: true,
+        beneficio: true,
         usuario: true,
       },
       orderBy: {
