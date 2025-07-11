@@ -97,7 +97,7 @@ export declare class PessoaService {
     } | {
         error: any;
     }>;
-    findAll(take: string, skip: string, filter: string): Promise<({
+    findAll(take: string, skip: string, filter: string | null | undefined): Promise<({
         usuario: {
             id: string;
             nome: string;

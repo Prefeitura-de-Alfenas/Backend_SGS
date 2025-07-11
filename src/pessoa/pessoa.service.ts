@@ -302,17 +302,27 @@ export class PessoaService {
     }
   }
 
-  async findAll(take: string, skip: string, filter: string) {
+  async findAll(take: string, skip: string, filter: string | null | undefined) {
     const takeNumber = parseInt(take);
     const skipNumber = parseInt(skip);
     const page = skipNumber == 0 ? skipNumber : skipNumber * takeNumber;
 
+    // Condicional para o filtro OR
+    const whereFilter =
+      filter && filter.trim() !== ''
+        ? {
+            OR: [
+              { nome: { contains: filter } },
+              { cpf: { contains: filter } },
+              { slug: { contains: filter } },
+            ],
+          }
+        : {};
+
     const pessoas = await this.prisma.pessoa.findMany({
       where: {
         pessoaId: null,
-        cpf: {
-          contains: filter,
-        },
+        ...whereFilter, // só inclui o OR se filter existir e não for vazio
       },
       orderBy: {
         createdAt: 'desc',
@@ -323,6 +333,7 @@ export class PessoaService {
         usuario: true,
       },
     });
+
     return pessoas;
   }
 

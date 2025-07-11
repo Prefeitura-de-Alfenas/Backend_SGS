@@ -271,12 +271,19 @@ let PessoaService = class PessoaService {
         const takeNumber = parseInt(take);
         const skipNumber = parseInt(skip);
         const page = skipNumber == 0 ? skipNumber : skipNumber * takeNumber;
+        const whereFilter = filter && filter.trim() !== ''
+            ? {
+                OR: [
+                    { nome: { contains: filter } },
+                    { cpf: { contains: filter } },
+                    { slug: { contains: filter } },
+                ],
+            }
+            : {};
         const pessoas = await this.prisma.pessoa.findMany({
             where: {
                 pessoaId: null,
-                cpf: {
-                    contains: filter,
-                },
+                ...whereFilter,
             },
             orderBy: {
                 createdAt: 'desc',
