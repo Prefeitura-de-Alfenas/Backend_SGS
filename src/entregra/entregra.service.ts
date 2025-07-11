@@ -223,6 +223,79 @@ export class EntregraService {
     return { entregas, usuarios, equipamentos };
   }
 
+  async relatorioRma({
+    dateinicial,
+    datefinal,
+    pessoId,
+    usuarioId,
+    equipamentoId,
+    beneficioId,
+    statusid,
+  }: BuscaEntrega) {
+    const formattedDateInicial = new Date(dateinicial);
+    const formattedDateFinal = addDays(new Date(datefinal), 1);
+
+    const whereClause: any = {
+      datacadastro: {
+        gte: formattedDateInicial,
+        lte: formattedDateFinal,
+      },
+    };
+
+    if (pessoId) whereClause.pessoId = pessoId;
+    if (equipamentoId) whereClause.equipamentoId = equipamentoId;
+    if (usuarioId) whereClause.usuarioId = usuarioId;
+    if (beneficioId) whereClause.beneficioId = beneficioId;
+    if (statusid) whereClause.status = statusid;
+
+    const entregas = await this.prisma.entrega.findMany({
+      where: whereClause,
+      include: {
+        equipamento: true,
+        beneficio: true,
+        pessoa: true,
+        usuario: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    const entregasAvulsa = await this.prisma.entregaAvulsa.findMany({
+      where: whereClause,
+      include: {
+        equipamento: true,
+        beneficio: true,
+        usuario: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    // Adiciona uma tag para identificar o tipo da entrega
+    const entregasFormatadas = entregas.map((entrega) => ({
+      ...entrega,
+      tipo: 'entrega',
+    }));
+
+    const entregasAvulsaFormatadas = entregasAvulsa.map((entrega) => ({
+      ...entrega,
+      tipo: 'entregaAvulsa',
+    }));
+
+    // Junta tudo em um único array
+    const todasEntregas = [...entregasFormatadas, ...entregasAvulsaFormatadas];
+
+    // Ordena por data de criação (caso queira mesclar os tipos ordenadamente)
+    todasEntregas.sort((a, b) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+    const usuarios = await this.prisma.usuario.findMany();
+    const equipamentos = await this.prisma.equipamento.findMany();
+    return { entregas: todasEntregas, usuarios, equipamentos };
+  }
+
   async findAllEntregaAvulsa({
     dateinicial,
     datefinal,

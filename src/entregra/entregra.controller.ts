@@ -51,7 +51,10 @@ export class EntregraController {
   ) {
     return this.entregraService.findAllForPessoas(id, take, skip);
   }
-
+  @Post('relatoriorma')
+  async relatorioRma(@Body() getBuscaDto: BuscaEntrega) {
+    return this.entregraService.relatorioRma(getBuscaDto);
+  }
   @Post('entregarelatoriodate')
   async findallForRelatorioPorData(@Body() getBuscaDto: BuscaEntrega) {
     return this.entregraService.findAllRelatorioPorData(getBuscaDto);

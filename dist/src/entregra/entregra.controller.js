@@ -38,6 +38,9 @@ let EntregraController = class EntregraController {
     async GetAllForPessoas(id, take, skip) {
         return this.entregraService.findAllForPessoas(id, take, skip);
     }
+    async relatorioRma(getBuscaDto) {
+        return this.entregraService.relatorioRma(getBuscaDto);
+    }
     async findallForRelatorioPorData(getBuscaDto) {
         return this.entregraService.findAllRelatorioPorData(getBuscaDto);
     }
@@ -87,6 +90,13 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], EntregraController.prototype, "GetAllForPessoas", null);
+__decorate([
+    (0, common_1.Post)('relatoriorma'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [BuscaEntrega_1.BuscaEntrega]),
+    __metadata("design:returntype", Promise)
+], EntregraController.prototype, "relatorioRma", null);
 __decorate([
     (0, common_1.Post)('entregarelatoriodate'),
     __param(0, (0, common_1.Body)()),
