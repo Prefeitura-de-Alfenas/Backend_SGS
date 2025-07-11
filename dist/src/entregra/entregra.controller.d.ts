@@ -41,6 +41,7 @@ export declare class EntregraController {
     GetAll(take: string, skip: string): Promise<({
         pessoa: {
             id: string;
+            slug: string;
             nome: string;
             cpf: string;
             sexo: string;
@@ -132,6 +133,7 @@ export declare class EntregraController {
             };
             pessoa: {
                 id: string;
+                slug: string;
                 nome: string;
                 cpf: string;
                 sexo: string;
@@ -213,6 +215,7 @@ export declare class EntregraController {
     GetAllForPessoas(id: string, take: string, skip: string): Promise<({
         pessoa: {
             id: string;
+            slug: string;
             nome: string;
             cpf: string;
             sexo: string;
@@ -305,6 +308,7 @@ export declare class EntregraController {
             };
             pessoa: {
                 id: string;
+                slug: string;
                 nome: string;
                 cpf: string;
                 sexo: string;
@@ -475,6 +479,7 @@ export declare class EntregraController {
             };
             pessoa: {
                 id: string;
+                slug: string;
                 nome: string;
                 cpf: string;
                 sexo: string;

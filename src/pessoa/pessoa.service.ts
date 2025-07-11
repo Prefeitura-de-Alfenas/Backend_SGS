@@ -5,9 +5,40 @@ import * as csv from 'csv-parser'; // Use importação correta para csv-parser
 import * as path from 'path';
 import { addDays, format, parse } from 'date-fns'; // Importe a função parse do date-fns
 import { ChanceStatusDto, MoverPessoaDto } from './dto/pessoadto';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
 @Injectable()
 export class PessoaService {
   constructor(private prisma: PrismaService) {}
+
+  slugify(nome: string): string {
+    const base = nome
+      .toLowerCase()
+      .normalize('NFD') // remove acentos
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .slice(0, 20);
+
+    const random = Math.floor(1000 + Math.random() * 9000); // 4 dígitos
+    return `${base}-${random}`;
+  }
+
+  async generateUniqueSlug(nome: string): Promise<string> {
+    let slug: string;
+    let exists = true;
+
+    do {
+      slug = this.slugify(nome);
+      const existing = await prisma.pessoa.findUnique({ where: { slug } });
+      exists = !!existing;
+    } while (exists);
+
+    return slug;
+  }
+
   async importDataFromCsv(): Promise<void> {
     const results: any[] = [];
     const filePath = path.join(
@@ -147,27 +178,38 @@ export class PessoaService {
 
   async create(createPessoaDto: any) {
     try {
-      // Extrai os arrays de IDs das relações M:N
-      if (createPessoaDto.pessoaId !== null) {
+      // Verifica se a pessoa tem responsavel
+      const hasResponsavel =
+        createPessoaDto.pessoaId !== null &&
+        createPessoaDto.pessoaId !== undefined;
+
+      // Se tiver responsavel, buscar para verificar status
+      if (hasResponsavel) {
         const responsavel = await this.prisma.pessoa.findUnique({
           where: {
             id: createPessoaDto.pessoaId,
           },
         });
-        if (responsavel.status === 'inativo') {
-          return { error: 'Responsavel desativado' };
+        if (responsavel?.status === 'inativo') {
+          return { error: 'Responsável desativado' };
         }
       }
-      const { pessoaDeficiencia, pessoaFonteRenda, ...dadosPessoa } =
+
+      const { pessoaDeficiencia, pessoaFonteRenda, nome, ...resto } =
         createPessoaDto;
-      const { nome, ...resto } = dadosPessoa;
+
+      // Gera slug apenas se não tiver responsavel
+      let slug: string | undefined = undefined;
+      if (!hasResponsavel) {
+        slug = await this.generateUniqueSlug(nome);
+      }
 
       const pessoa = await this.prisma.pessoa.create({
         data: {
           nome: nome.toUpperCase(),
+          slug, // só setará o slug se for definido, caso contrário ficará NULL no DB
           ...resto,
 
-          // Cria os relacionamentos com deficiência
           pessoaDeficiencia: {
             create:
               pessoaDeficiencia?.map((deficienciaId: string) => ({
@@ -175,7 +217,6 @@ export class PessoaService {
               })) || [],
           },
 
-          // Cria os relacionamentos com fonte de renda
           pessoaFonteRenda: {
             create:
               pessoaFonteRenda?.map((fonteRendaId: string) => ({

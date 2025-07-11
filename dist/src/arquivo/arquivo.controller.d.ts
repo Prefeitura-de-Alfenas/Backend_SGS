@@ -8,6 +8,7 @@ export declare class ArquivoController {
     GetAllForPessoas(id: string, take: string, skip: string, filter?: string): Promise<({
         pessoa: {
             id: string;
+            slug: string;
             nome: string;
             cpf: string;
             sexo: string;

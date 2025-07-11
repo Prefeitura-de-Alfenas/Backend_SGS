@@ -3,6 +3,8 @@ import { ChanceStatusDto, MoverPessoaDto } from './dto/pessoadto';
 export declare class PessoaService {
     private prisma;
     constructor(prisma: PrismaService);
+    slugify(nome: string): string;
+    generateUniqueSlug(nome: string): Promise<string>;
     importDataFromCsv(): Promise<void>;
     findbyidEntrega(id: string): Promise<any>;
     changeResponsavelFamiliar(idFamilar: string): Promise<{
@@ -23,6 +25,7 @@ export declare class PessoaService {
         }[];
     } & {
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
@@ -59,6 +62,7 @@ export declare class PessoaService {
     }>;
     update(id: string, updatePessoaDto: any): Promise<{
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
@@ -107,6 +111,7 @@ export declare class PessoaService {
         };
     } & {
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
@@ -141,6 +146,7 @@ export declare class PessoaService {
     })[]>;
     findAllRelatorioPorData(dateinicial: string, datefinal: string, filter: string): Promise<{
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
@@ -177,6 +183,7 @@ export declare class PessoaService {
     findFamiliiaresByid(id: string): Promise<any>;
     findAllFamiliares(id: string, take: string, skip: string, filter: string): Promise<{
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
@@ -211,6 +218,7 @@ export declare class PessoaService {
     }[]>;
     changeStatus(data: ChanceStatusDto): Promise<{
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
@@ -247,6 +255,7 @@ export declare class PessoaService {
     }>;
     findAllInativePessoas(take: string, skip: string, filter: string): Promise<{
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
@@ -287,6 +296,7 @@ export declare class PessoaService {
         message: string;
         pessoaAtualizada: {
             id: string;
+            slug: string;
             nome: string;
             cpf: string;
             sexo: string;
@@ -330,6 +340,7 @@ export declare class PessoaService {
     }>;
     buscaEnderecoRepetido(cep: string, numero: string): Promise<{
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;

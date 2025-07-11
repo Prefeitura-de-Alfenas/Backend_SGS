@@ -12,6 +12,7 @@ export declare class BeneficioService {
         }[];
     } & {
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;

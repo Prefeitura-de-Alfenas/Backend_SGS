@@ -9,6 +9,7 @@ export declare class ArquivoService {
     findAllForPessoas(id: string, take: string, skip: string, filter: string): Promise<({
         pessoa: {
             id: string;
+            slug: string;
             nome: string;
             cpf: string;
             sexo: string;

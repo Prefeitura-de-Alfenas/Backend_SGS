@@ -16,9 +16,32 @@ const fs = require("fs");
 const csv = require("csv-parser");
 const path = require("path");
 const date_fns_1 = require("date-fns");
+const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient();
 let PessoaService = class PessoaService {
     constructor(prisma) {
         this.prisma = prisma;
+    }
+    slugify(nome) {
+        const base = nome
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .slice(0, 20);
+        const random = Math.floor(1000 + Math.random() * 9000);
+        return `${base}-${random}`;
+    }
+    async generateUniqueSlug(nome) {
+        let slug;
+        let exists = true;
+        do {
+            slug = this.slugify(nome);
+            const existing = await prisma.pessoa.findUnique({ where: { slug } });
+            exists = !!existing;
+        } while (exists);
+        return slug;
     }
     async importDataFromCsv() {
         const results = [];
@@ -144,21 +167,27 @@ let PessoaService = class PessoaService {
     }
     async create(createPessoaDto) {
         try {
-            if (createPessoaDto.pessoaId !== null) {
+            const hasResponsavel = createPessoaDto.pessoaId !== null &&
+                createPessoaDto.pessoaId !== undefined;
+            if (hasResponsavel) {
                 const responsavel = await this.prisma.pessoa.findUnique({
                     where: {
                         id: createPessoaDto.pessoaId,
                     },
                 });
-                if (responsavel.status === 'inativo') {
-                    return { error: 'Responsavel desativado' };
+                if (responsavel?.status === 'inativo') {
+                    return { error: 'Responsável desativado' };
                 }
             }
-            const { pessoaDeficiencia, pessoaFonteRenda, ...dadosPessoa } = createPessoaDto;
-            const { nome, ...resto } = dadosPessoa;
+            const { pessoaDeficiencia, pessoaFonteRenda, nome, ...resto } = createPessoaDto;
+            let slug = undefined;
+            if (!hasResponsavel) {
+                slug = await this.generateUniqueSlug(nome);
+            }
             const pessoa = await this.prisma.pessoa.create({
                 data: {
                     nome: nome.toUpperCase(),
+                    slug,
                     ...resto,
                     pessoaDeficiencia: {
                         create: pessoaDeficiencia?.map((deficienciaId) => ({

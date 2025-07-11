@@ -41,6 +41,7 @@ export declare class EntregraService {
     findAllForPessoas(id: string, take: string, skip: string): Promise<({
         pessoa: {
             id: string;
+            slug: string;
             nome: string;
             cpf: string;
             sexo: string;
@@ -103,6 +104,7 @@ export declare class EntregraService {
     findAll(take: string, skip: string): Promise<({
         pessoa: {
             id: string;
+            slug: string;
             nome: string;
             cpf: string;
             sexo: string;
@@ -194,6 +196,7 @@ export declare class EntregraService {
             };
             pessoa: {
                 id: string;
+                slug: string;
                 nome: string;
                 cpf: string;
                 sexo: string;
@@ -304,6 +307,7 @@ export declare class EntregraService {
             };
             pessoa: {
                 id: string;
+                slug: string;
                 nome: string;
                 cpf: string;
                 sexo: string;
@@ -423,6 +427,7 @@ export declare class EntregraService {
             };
             pessoa: {
                 id: string;
+                slug: string;
                 nome: string;
                 cpf: string;
                 sexo: string;

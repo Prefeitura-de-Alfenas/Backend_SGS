@@ -68,6 +68,7 @@ export declare class BeneficioController {
         }[];
     } & {
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;

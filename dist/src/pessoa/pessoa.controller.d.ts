@@ -7,6 +7,7 @@ export declare class PessoaController {
     backup(): Promise<string>;
     enderecoRepetido(cep: string, numero: string): Promise<{
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
@@ -41,6 +42,7 @@ export declare class PessoaController {
     }[]>;
     changeStatusPessoa(body: ChanceStatusDto): Promise<{
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
@@ -83,6 +85,7 @@ export declare class PessoaController {
         message: string;
         pessoaAtualizada: {
             id: string;
+            slug: string;
             nome: string;
             cpf: string;
             sexo: string;
@@ -131,6 +134,7 @@ export declare class PessoaController {
         };
     } & {
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
@@ -165,6 +169,7 @@ export declare class PessoaController {
     })[]>;
     findallForRelatorioPorData(dateinicial: string, datefinal: string, filter?: string): Promise<{
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
@@ -208,6 +213,7 @@ export declare class PessoaController {
         }[];
     } & {
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
@@ -247,6 +253,7 @@ export declare class PessoaController {
     findbyidEntrega(id: string): Promise<any>;
     update(id: string, updatePessoaDto: Prisma.PessoaUpdateInput): Promise<{
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
@@ -283,6 +290,7 @@ export declare class PessoaController {
     }>;
     findAllFamiliares(id: string, take: string, skip: string, filter?: string): Promise<{
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
@@ -324,6 +332,7 @@ export declare class PessoaController {
     }>;
     findallInativePessoas(take: string, skip: string, filter?: string): Promise<{
         id: string;
+        slug: string;
         nome: string;
         cpf: string;
         sexo: string;
